@@ -1,0 +1,43 @@
+version: '3'
+services:
+    app: 
+      build: .
+      environment:
+        DB_HOST: db
+        DB_PORT: 5432
+        DB_NAME: tasks
+        DB_USER: postgres
+        DB_PASSWORD: mysecretpassword
+      ports:
+        - 3000:3000
+      networks:
+        - web
+      depends_on:
+        - db
+      volumes:
+        - .:/usr/src/app
+      command: npm start
+
+    mongodb:
+      image: mongo:latest
+      container_name: my_mongodb
+      ports: 
+       - 27017:27017
+      volumes: 
+        - ./data:/data/db
+      environment:
+        - MONGO_INITDB_ROOT_USERNAME=myuser
+        - MONGO_INITDB_ROOT_PASSWORD=mypassword
+
+    postgres:
+      image: postgres:16
+      environment:
+        POSTGRES_PASSWORD: mysecretpassword
+      networks:
+        - web
+      volumes:
+        - ./database/:/docker-entrypoint-initdb.d/
+      ports:
+        - 5432:5432
+
+  
