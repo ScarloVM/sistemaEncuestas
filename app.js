@@ -19,42 +19,11 @@ const appService = new AppService(db);
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.send('Hello World');
+    res.send('ola Kennors');
 });
 
-
-app.get('/api/tasks', authenticateToken, async (req, res) => {
-    const tasks = await appService.getTasks();
-    res.send(tasks);
-});
-
-app.get('/api/tasks/:id', authenticateToken, async (req, res) => {
-    const task = await appService.getTaskById(req.params.id);
-    res.send(task);
-});
-
-app.post('/api/tasks', authenticateToken, async (req, res) => {
-    const task = await appService.createTask(req.body);
-    res.send(task);
-});
-
-app.put('/api/tasks/:id', authenticateToken, async (req, res) => {
-    const task = await appService.updateTask(req.body,req.params.id);
-    res.send(task);
-});
-
-app.delete('/api/tasks/:id', authenticateToken, async (req, res) => {
-    const task = await appService.deleteTask(req.params.id);
-    res.send(task);
-});
-
-
-
-// ---------------------------------------------------------------------------------------------
-
-
-// Ruta para el registro de usuarios
-app.post('/api/register', async (req, res) => {
+// Autenticacion y Autorizacion
+app.post('/auth/register', async (req, res) => {
     try {
         
         // Verificar si el usuario ya existe en la base de datos
@@ -73,9 +42,7 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
-
-// Ruta para iniciar sesión
-app.post('/api/login', async (req, res) => {
+app.post('/auth/login', async (req, res) => {
     try {
         // Obtener el usuario de la base de datos
         const user = await appService.getUserByUsername(req.body.name);
@@ -96,6 +63,153 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+app.get('/auth/logout', (req, res) => {
+    res.send('Sesión cerrada correctamente');
+});
+
+
+
+// Usuarios
+app.get('/users', authenticateToken, async (req, res) => {
+    const tasks = await appService.getTasks();
+    res.send(tasks);
+});
+
+app.get('/users/:id', async (req, res) => {
+    const task = await appService.getTaskById(req.params.id);
+    res.send(task);
+});
+
+app.put('/users/:id', authenticateToken, async (req, res) => {
+    const task = await appService.updateTask(req.body,req.params.id);
+    res.send(task);
+});
+
+app.delete('/users/:id', authenticateToken, async (req, res) => {
+    const task = await appService.deleteTask(req.params.id);
+    res.send(task);
+});
+
+// Encuestas
+
+app.post('/surveys', authenticateToken, async (req, res) => {
+    try {
+        const survey = await appService.createSurvey(req.body);
+        res.status(201).send(survey);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al crear la encuesta');
+    }
+});
+
+app.get('/surveys', async (req, res) => {
+    const surveys = await appService.getSurveys();
+    res.send(surveys);
+});
+
+app.get('/surveys/:id', async (req, res) => {
+    const survey = await appService.getSurveyById(req.params.id);
+    res.send(survey);
+});
+
+app.put('/surveys/:id', authenticateToken, async (req, res) => {
+    const survey = await appService.updateSurvey(req.body, req.params.id);
+    res.send(survey);
+});
+
+app.delete('/surveys/:id', authenticateToken, async (req, res) => {
+    const survey = await appService.deleteSurvey(req.params.id);
+    res.send(survey);
+});
+
+app.post('/surveys/:id/publish', async (req, res) => {
+    const survey = await appService.publishSurvey(req.params.id);
+    res.send(survey);
+});
+
+// Preguntas de encuestas
+
+app.post('/surveys/:id/questions', authenticateToken, async (req, res) => {
+    try {
+        const question = await appService.createQuestion(req.body, req.params.id);
+        res.status(201).send(question);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al crear la pregunta');
+    }
+});
+
+app.get('/surveys/:id/questions', async (req, res) => {
+    const questions = await appService.getQuestions(req.params.id);
+    res.send(questions);
+});
+
+app.put('/surveys/:id/questions/:questionId', authenticateToken, async (req, res) => {
+    const question = await appService.updateQuestion(req.body, req.params.questionId);
+    res.send(question);
+});
+
+app.delete('/surveys/:id/questions/:questionId', authenticateToken, async (req, res) => {
+    const question = await appService.deleteQuestion(req.params.questionId);
+    res.send(question);
+});
+
+// Respuestas de encuestas
+
+app.post(' /surveys/:id/responses', async (req, res) => {
+    try {
+        const response = await appService.createResponse(req.body, req.params.id);
+        res.status(201).send(response);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al crear la respuesta');
+    }
+});
+
+app.get('/surveys/:id/responses', async (req, res) => {
+    const responses = await appService.getResponses(req.params.id);
+    res.send(responses);
+});
+
+// Encuestados
+
+app.post('/respondents', authenticateToken, async (req, res) => {
+    try {
+        const respondent = await appService.createRespondent(req.body);
+        res.status(201).send(respondent);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).send('Error al crear el encuestado');
+    }
+});
+
+app.get('/respondents', async (req, res) => {
+    const respondents = await appService.getRespondents();
+    res.send(respondents);
+});
+
+app.get('/respondents/:id', async (req, res) => {
+    const respondent = await appService.getRespondentById(req.params.id);
+    res.send(respondent);
+});
+
+app.put('/respondents/:id', authenticateToken, async (req, res) => {
+    const respondent = await appService.updateRespondent(req.body, req.params.id);
+    res.send(respondent);
+});
+
+app.delete('/respondents/:id', authenticateToken, async (req, res) => {
+    const respondent = await appService.deleteRespondent(req.params.id);
+    res.send(respondent);
+});
+
+// Reportes y analisis
+
+app.get('/surveys/:id/analysis', async (req, res) => {
+    const analysis = await appService.getAnalysis(req.params.id);
+    res.send(analysis);
+});
 
 
 // Middleware para verificar el token JWT y autenticar al usuario
