@@ -71,22 +71,22 @@ app.get('/auth/logout', (req, res) => {
 
 // Usuarios
 app.get('/users', authenticateToken, async (req, res) => {
-    const tasks = await appService.getTasks();
+    const tasks = await appService.getUsers();
     res.send(tasks);
 });
 
 app.get('/users/:id', async (req, res) => {
-    const task = await appService.getTaskById(req.params.id);
+    const task = await appService.getUserById(req.params.id);
     res.send(task);
 });
 
 app.put('/users/:id', authenticateToken, async (req, res) => {
-    const task = await appService.updateTask(req.body,req.params.id);
+    const task = await appService.updateUser(req.body,req.params.id);
     res.send(task);
 });
 
 app.delete('/users/:id', authenticateToken, async (req, res) => {
-    const task = await appService.deleteTask(req.params.id);
+    const task = await appService.deleteUser(req.params.id);
     res.send(task);
 });
 
@@ -156,7 +156,7 @@ app.delete('/surveys/:id/questions/:questionId', authenticateToken, async (req, 
 
 // Respuestas de encuestas
 
-app.post(' /surveys/:id/responses', async (req, res) => {
+app.post('/surveys/:id/responses', async (req, res) => {
     try {
         const response = await appService.createResponse(req.body, req.params.id);
         res.status(201).send(response);
@@ -172,7 +172,6 @@ app.get('/surveys/:id/responses', async (req, res) => {
 });
 
 // Encuestados
-
 app.post('/respondents', authenticateToken, async (req, res) => {
     try {
         const respondent = await appService.createRespondent(req.body);
@@ -205,7 +204,6 @@ app.delete('/respondents/:id', authenticateToken, async (req, res) => {
 });
 
 // Reportes y analisis
-
 app.get('/surveys/:id/analysis', async (req, res) => {
     const analysis = await appService.getAnalysis(req.params.id);
     res.send(analysis);
