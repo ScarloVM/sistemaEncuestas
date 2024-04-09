@@ -1,6 +1,9 @@
-\c tasks;
+\c sistemaencuestas;
 
-INSERT INTO users (name, password) VALUES ('Javier','1234' ),('Julian', '1234'),('Kendell', '1234'),('Carlos', '1234');
+INSERT INTO users (name, email, password, rol) VALUES ('Javier','javialroro@gmail.com','1234',1),('Carlos', 'carlos@gmail.com', '1234',1)
+,('Kendell','kendell@gmail.com','1234',2),('Julian','julian@gmail.com','1234',3);
+
+INSERT INTO rol (name) VALUES ('admin'),('creador'),('encuestado');
 
 
 
