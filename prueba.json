@@ -1,0 +1,77 @@
+{
+  "idEncuesta": 1,
+  "titulo": "Encuesta de satisfacción del cliente",
+  "descripcion": "Esta encuesta tiene como objetivo recopilar información sobre la satisfacción del cliente.",
+  "creador": "user123",
+  "estado": "draft",
+  "questions": [
+    {
+      "idPregunta": 1,
+      "tipo": "open-ended",
+      "texto": "¿Cuál es tu opinión sobre nuestro servicio?",
+      "required": true
+    },
+    {
+      "idPregunta": 2,
+      "tipo": "single-choice",
+      "texto": "¿Estás satisfecho con el producto?",
+      "options": ["Sí", "No"],
+      "required": true
+    },
+    {
+      "idPregunta": 3,
+      "tipo": "multiple-choice",
+      "texto": "¿Qué productos te gustaría ver en el futuro?",
+      "options": ["Producto A", "Producto B", "Producto C"],
+      "required": false
+    }
+  ],
+  "respuestas": [
+    {
+        "idEncuestado": 1,
+        "respuesta": [
+            {
+                "idPregunta": 1,
+                "tipo": "abierta",
+                "texto": "¿Cuál es tu opinión sobre nuestro servicio?",
+                "respuesta":"Muy malo",
+                "required": true
+            },
+            {
+                "idPregunta": 2,
+                "tipo": "eleccion_simple",
+                "texto": "¿Estás satisfecho con el producto?",
+                "option_seleccionada": "No",
+                "required": true
+            },
+            {
+                "idPregunta": 3,
+                "tipo": "eleccion_multiple",
+                "texto": "¿Qué productos te gustaría ver en el futuro?",
+                "option_seleccionada": "Vaso de Coca",
+                "required": false
+            }
+        ]
+    }
+  ]
+}
+
+{
+    "user": "Jeffrey Perez", 
+    "user_email": "ginawood@example.org", 
+    "user_age": 39, 
+    "post": {
+        "title": "Random title for Jeffrey Perez", 
+        "content": "Random content for Jeffrey Perez Certain Congress development. Send explain recognize country most issue interesting. Bill fill say look member officer nor. She community anyone raise.", 
+        "timestamp": "1977-06-15T06:13:54.643692"
+        }, 
+    "comments": [{
+        "user": "Joann Bowen", 
+        "user_email": "sarabright@example.org", 
+        "user_age": 33, 
+        "comment": {
+            "text": "Random text Investment so suffer vote example her I. Practice yes kind letter page cup law. Artist join recent according.", 
+            "timestamp": "1999-08-13T05:02:06.865056"
+            }
+        }]
+}
