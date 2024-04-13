@@ -1,6 +1,5 @@
 // app.test.js
 const request = require('supertest');
-const app = require('../app');
 const jwt = require('jsonwebtoken');
 
 // Función para generar un token JWT válido para pruebas
@@ -10,7 +9,7 @@ function generateAuthToken(username) {
 
 describe('GET /', () => {
   it('Deberia retornar "ola Kennors"', async () => {
-    const response = await request(app).get('/');
+    const response = await request('http://localhost:3000').get('/');
     expect(response.status).toBe(200);
     expect(response.text).toBe('ola Kennors');
   });
