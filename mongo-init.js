@@ -52,7 +52,7 @@ db.encuestas.insertOne({
                   "idPregunta": 3,
                   "tipo": "eleccion_multiple",
                   "texto": "¿Qué productos te gustaría ver en el futuro?",
-                  "option_seleccionada": "Vaso de Coca",
+                  "option_seleccionada": "Producto B",
                   "required": false
               }
           ]

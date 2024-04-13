@@ -1,10 +1,12 @@
 const { MongoClient } = require('mongodb');
 
 class Database2 {
-    constructor(database, url) {
+    constructor(database, url, username, password) {
         this.database = database;
         this.url = url;
-        this.client = new MongoClient(this.url);
+        this.username = username;
+        this.password = password;
+        this.client = new MongoClient(this.url, { auth: { username: this.username, password: this.password } });
         this.connect();
     }
 
@@ -18,6 +20,8 @@ class Database2 {
         }
     }
 
+
+
     async disconnect() {
         try {
             await this.client.close();
@@ -27,9 +31,9 @@ class Database2 {
         }
     }
 
-    async insertSurvey(collectionName, document) {
+    async insertSurvey(document) {
         try {
-            const collection = this.db.collection(collectionName);
+            const collection = this.db.collection('encuestas');
             const result = await collection.insertOne(document);
             console.log('Document inserted successfully:', result.insertedId);
             return result.insertedId;

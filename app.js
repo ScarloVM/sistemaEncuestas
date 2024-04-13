@@ -14,7 +14,7 @@ const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
 const MONGO_URL = process.env.MONGO_URL;
 const MONGO_NAME = process.env.MONGO_NAME;
-const db2 = new Database2(MONGO_NAME, MONGO_URL);
+const db2 = new Database2(MONGO_NAME, MONGO_URL,'root', 'example');
 
 const db = new Database(DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT);
 
@@ -96,7 +96,7 @@ app.delete('/users/:id', authenticateToken, async (req, res) => {
 
 // Encuestas
 
-app.post('/surveys', authenticateToken, async (req, res) => {
+app.post('/surveys',  async (req, res) => {
     try {
         const survey = await appService.createSurvey(req.body);
         res.status(201).send(survey);

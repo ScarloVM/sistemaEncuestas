@@ -66,7 +66,7 @@ class AppService {
 
     async createSurvey(request_json) {
         try{
-            return await this.database.createSurvey(request_json);
+            return await this.database2.insertSurvey(request_json);
         }
         catch(e){
             console.error(`Failed to create survey ${e}`);
