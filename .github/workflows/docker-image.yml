@@ -32,16 +32,15 @@ jobs:
       run: |
         docker push javialroro/snupieencuestas:latest
 
-    - name: Docekr Compose
+    - name: Docker Compose
       run: |
         docker compose up -d
-
-    - name: Run Tests
-      run: docker-compose exec app npm test
+        docker-compose exec app npm test
 
     - name: Stop Docker Compose
-      run: docker-compose down
-
+      run: |
+        docker-compose down
+        
     - name: Check Test Result
       run: |
         if [ "${{ steps.install_dependencies_and_run_tests.outcome }}" != "success" ]; then
