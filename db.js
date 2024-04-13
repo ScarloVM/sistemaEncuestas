@@ -87,6 +87,17 @@ async createUser(username, email, password, rol) {
             console.error(`Failed to delete user ${e}`);
         }
     }
+
+    //Encuestados
+
+    async getRespondents() {
+        try {
+            const result = await this.client.query('select * from users where rol = 3');
+            return result.rows;
+        } catch (e) {
+            console.error(`Failed to get encuestados ${e}`);
+        }
+    }
  
 }
 
