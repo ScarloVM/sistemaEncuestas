@@ -21,7 +21,6 @@ class Database2 {
     }
 
 
-
     async disconnect() {
         try {
             await this.client.close();
@@ -31,6 +30,7 @@ class Database2 {
         }
     }
 
+    // Encuestas
     async insertSurvey(document) {
         try {
             const collection = this.db.collection('encuestas');
@@ -83,6 +83,34 @@ class Database2 {
             console.error(`Failed to delete document by ID: ${e}`);
         }
     }
-}
 
+    // Preguntas de encuestas
+
+    async insertResponse(response, survey_id) {
+        try {
+            const collection = this.db.collection('encuestas');
+            const result = await collection.updateOne({ 'idEncuesta': parseInt(survey_id) }, { $push: { 'respuestas': response } });
+            console.log('Response inserted successfully:', result.modifiedCount);
+            return result.modifiedCount;
+        } catch (e) {
+            console.error(`Failed to insert response: ${e}`);
+        }
+    }
+
+    async getResponses(survey_id) {
+        try {
+            const collection = this.db.collection('encuestas');
+            const result = await collection.findOne({ 'idEncuesta': parseInt(survey_id)});
+            if (result) {
+                return result.respuestas;
+            } else {
+                console.error(`Survey with id ${survey_id} not found`);
+                return [];
+            }
+        } catch (e) {
+            console.error(`Failed to get response ${e}`);
+            return [];
+        }
+    }
+}
 module.exports.Database2 = Database2;

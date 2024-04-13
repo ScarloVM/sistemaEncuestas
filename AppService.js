@@ -158,18 +158,18 @@ class AppService {
 
 // Respuestas de encuestas
 
-    async createResponse(request_json, question_id) {
+    async insertResponse(request_json, survey_id) {
         try{
-            return await this.database.createResponse(request_json, question_id);
+            return await this.database2.insertResponse(request_json, survey_id);
         }
         catch(e){
             console.error(`Failed to create response ${e}`);
         }
     }
 
-    async getResponse(question_id) {
+    async getResponses(survey_id) {
         try{
-            return await this.database.getResponses(question_id);
+            return await this.database2.getResponses(survey_id);
         }
         catch(e){
             console.error(`Failed to get response ${e}`);

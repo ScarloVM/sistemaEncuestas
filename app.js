@@ -162,11 +162,12 @@ app.delete('/surveys/:id/questions/:questionId', authenticateToken, async (req, 
 
 app.post('/surveys/:id/responses', async (req, res) => {
     try {
-        const response = await appService.createResponse(req.body, req.params.id);
-        res.status(201).send(response);
+        const response = await appService.insertResponse(req.body, req.params.id);
+        console.log(response);
+        res.status(200).send({ modifiedCount: response }); // Envía un código de estado 200 y el valor de modifiedCount como cuerpo de respuesta
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error al crear la respuesta');
+        res.status(500).send('Error al insertar la respuesta');
     }
 });
 
