@@ -32,10 +32,15 @@ jobs:
       run: |
         docker push javialroro/snupieencuestas:latest
 
-    - name: Install Dependencies and Run Tests
+    - name: Docekr Compose
       run: |
-        chmod +x node_modules/.bin/jest
-        npx jest
+        docker compose up -d
+
+    - name: Run Tests
+      run: docker-compose exec app npm test
+
+    - name: Stop Docker Compose
+      run: docker-compose down
 
     - name: Check Test Result
       run: |
