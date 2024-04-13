@@ -107,7 +107,7 @@ app.post('/surveys',  async (req, res) => {
 });
 
 app.get('/surveys', async (req, res) => { // r
-    const surveys = await appService.getSurveys();
+    const surveys = await appService.getSurveys('encuestas');
     res.send(surveys);
 });
 

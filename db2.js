@@ -52,6 +52,16 @@ class Database2 {
         }
     }
 
+    async findAllSurveys(collectionName) {
+        try {
+            const collection = this.db.collection(collectionName);
+            const result = await collection.find({}).toArray();
+            return result;
+        } catch (e) {
+            console.error(`Failed to find all documents in collection: ${e}`);
+        }
+    }
+   
     async updateSurveyById(collectionName, id, updatedDocument) {
         try {
             const collection = this.db.collection(collectionName);

@@ -73,9 +73,9 @@ class AppService {
         }
     }
 
-    async getSurveys() {
+    async getSurveys(collectionName) {
         try{
-            return await this.database.getSurveys();
+            return await this.database2.findAllSurveys(collectionName);
         }
         catch(e){
             console.error(`Failed to get surveys ${e}`);
