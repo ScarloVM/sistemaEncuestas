@@ -34,6 +34,7 @@ jobs:
 
     - name: Install Dependencies and Run Tests
       run: |
+        git chmod +x jest
         git update-index --chmod=+x ./__tests__/appTests.js
         npm install
         npm test
