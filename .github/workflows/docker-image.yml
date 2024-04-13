@@ -35,7 +35,9 @@ jobs:
     - name: Start Docker Compose
       run: |
         docker-compose up -d
-        sleep 80 # Espera 30 segundos para que los servicios se inicien\
+        sleep 80 # Espera 30 segundos para que los servicios se inicien
+    - name: Run Tests
+      run:  |
         docker-compose exec app npm test
         TEST_EXIT_CODE=$?
         echo "Test exit code: $TEST_EXIT_CODE"
