@@ -87,6 +87,18 @@ services:
       - web
     depends_on:
       - mongo
+  
+  redis-master:
+    image: redis:6-alpine
+    volumes:
+      - "./.data:/data"
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_MASTER_HOST=127.0.0.1
+    networks:
+      - web
+  
 networks:
   web:
     driver: bridge

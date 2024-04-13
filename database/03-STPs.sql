@@ -1,4 +1,5 @@
 --VER TODOS LOS USUARIOS
+\c sistemaencuestas;
 
 CREATE OR REPLACE FUNCTION obtenerUsuarios() RETURNS TABLE (
 	id integer,
@@ -10,8 +11,7 @@ CREATE OR REPLACE FUNCTION obtenerUsuarios() RETURNS TABLE (
 AS
 $$
 
-SELECT *
-FROM users;
+SELECT * FROM users;
 
 $$
 LANGUAGE SQL
