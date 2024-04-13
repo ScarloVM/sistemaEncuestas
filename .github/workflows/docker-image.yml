@@ -34,12 +34,12 @@ jobs:
 
     - name: Install Dependencies and Run Tests
       run: |
-        npm install
+        chmod +x node_modules/.bin/jest
         npx jest
 
     - name: Check Test Result
       run: |
-        if [ ${{ job.status }} != "completed" ]; then
+        if [ "${{ steps.install_dependencies_and_run_tests.outcome }}" != "success" ]; then
           echo "Tests failed, cancelling merge."
           exit 1
         fi
