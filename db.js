@@ -35,17 +35,18 @@ class Database {
     }
 
 // Autenticacion y Autorizacion
-    async createUser(username, password) {
-        try {
-            await this.client.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, password]);
-        } catch (e) {
-            console.error(`Failed to create user ${e}`);
-        }
+async createUser(username, email, password, rol) {
+    try {
+        await this.client.query('INSERT INTO users (name, email, password, rol) VALUES ($1, $2, $3, $4)', [username, email, password, rol]);
+    } catch (e) {
+        console.error(`Failed to create user ${e}`);
     }
+}
+
 
     async getUserByUsername(username) {
         try {
-            const result = await this.client.query('SELECT * FROM users WHERE username = $1', [username]);
+            const result = await this.client.query('SELECT * FROM users WHERE name = $1', [username]);
             return result.rows[0];
         } catch (e) {
             console.error(`Failed to get user by username ${e}`);

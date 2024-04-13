@@ -35,7 +35,7 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: snupie@tech.com
+      PGADMIN_DEFAULT_EMAIL: postgres@tech.com
       PGADMIN_DEFAULT_PASSWORD: 1234
     ports:
       - 5050:80

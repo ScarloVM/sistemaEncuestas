@@ -38,7 +38,7 @@ app.post('/auth/register', async (req, res) => {
         // Hash de la contraseña antes de guardarla en la base de datos
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         // Guardar el nuevo usuario en la base de datos
-        await appService.createUser(req.body.name, hashedPassword);
+        await appService.createUser(req.body.name, req.body.email, hashedPassword, req.body.role);
         res.status(201).send('Usuario registrado correctamente');
     } catch (error) {
         console.error(error);
@@ -59,7 +59,7 @@ app.post('/auth/login', async (req, res) => {
             return res.status(401).send('Nombre de usuario o contraseña incorrectos');
         }
         // Generar un token JWT para el usuario autenticado
-        const token = jwt.sign({ username: user.username }, 'secreto');
+        const token = jwt.sign({ username: user.name, role: user.rol, id: user.id }, 'secreto');
         res.send({ token });
     } catch (error) {
         console.error(error);
@@ -74,12 +74,12 @@ app.get('/auth/logout', (req, res) => {
 
 
 // Usuarios
-app.get('/users', async (req, res) => { // r
+app.get('/users', authenticateAdminCreator,  async (req, res) => { // r
     const tasks = await appService.getUsers();
     res.send(tasks);
 });
 
-app.get('/users/:id', async (req, res) => { // r
+app.get('/users/:id', authenticateOwnRole, async (req, res) => { // r
     const task = await appService.getUserById(req.params.id);
     res.send(task);
 });
@@ -222,14 +222,88 @@ function authenticateToken(req, res, next) {
     if (!token) {
         return res.status(401).send('Se requiere un token de autenticación');
     }
-    jwt.verify(token, 'secreto', (err, user) => {
+    
+    // Verificar y decodificar el token JWT
+    jwt.verify(token, 'secreto', (err, decoded) => {
         if (err) {
             return res.status(403).send('Token de autenticación inválido');
         }
-        req.user = user;
+        // Extraer la información del payload
+        const { username, role } = decoded;
+
+        // Guardar la información en el objeto de solicitud (req) para su uso posterior
+        req.user = { username, role };
+
         next();
     });
 }
+
+// Middleware para verificar el token JWT y autenticar al usuario como administrador
+function authenticateAdmin(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Obtener el token JWT del encabezado de autorización
+    if (!token) {
+        return res.status(401).send('Se requiere un token de autenticación');
+    }
+    
+    // Verificar y decodificar el token JWT
+    jwt.verify(token, 'secreto', (err, decoded) => {
+        if (err) {
+            return res.status(403).send('Token de autenticación inválido');
+        }
+        // Verificar si el rol del usuario es administrador
+        if (decoded.role !== 1) {
+            return res.status(403).send('Acceso denegado. Se requiere rol de administrador');
+        }
+        // Si el usuario es administrador, continúa con la siguiente middleware
+        next();
+    });
+}
+
+function authenticateAdminCreator(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Obtener el token JWT del encabezado de autorización
+    if (!token) {
+        return res.status(401).send('Se requiere un token de autenticación');
+    }
+    
+    // Verificar y decodificar el token JWT
+    jwt.verify(token, 'secreto', (err, decoded) => {
+        if (err) {
+            return res.status(403).send('Token de autenticación inválido');
+        }
+        // Verificar si el rol del usuario es administrador
+        if (decoded.role !== 1 && decoded.role !== 2) {
+            return res.status(403).send('Acceso denegado. Se requiere rol de administrador o creador de encuestas');
+        }
+        // Si el usuario es administrador, continúa con la siguiente middleware
+        next();
+    });
+
+}
+
+function authenticateOwnRole(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Obtener el token JWT del encabezado de autorización
+    if (!token) {
+        return res.status(401).send('Se requiere un token de autenticación');
+    }
+    // Verificar y decodificar el token JWT
+    jwt.verify(token, 'secreto', (err, decoded) => {
+        if (err) {
+            return res.status(403).send('Token de autenticación inválido');
+        }
+        // Verificar si el ID del usuario en el token coincide con el ID proporcionado en la solicitud
+        // o si el rol del usuario en el token es igual a 1 (es decir, si es administrador)
+        if (decoded.id !== req.params.id && decoded.role !== 1) {
+            return res.status(403).send('Acceso denegado. No tienes permiso para acceder a este recurso');
+        }
+        next();
+    });
+}
+
+
+
 
 
 // _______________________________________________________________________________________________
