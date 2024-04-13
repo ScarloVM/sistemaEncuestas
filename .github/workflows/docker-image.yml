@@ -1,12 +1,14 @@
-name: Docker Build
+name: Docker Build and Test
 
 on:
   push:
     branches:
       - main
+      - tests
   pull_request:
     branches:
       - main
+      - tests
 
 jobs:
   build:
@@ -22,7 +24,47 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and Push Docker Image
+    - name: Build Docker Image
       run: |
         docker build -t javialroro/snupieencuestas:latest .
+      
+    - name: Push Docker Image
+      run: |
         docker push javialroro/snupieencuestas:latest
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/tests'
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Run Tests
+      run: npm test
+
+  merge-check:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action == 'opened' || github.event.action == 'synchronize'
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Run Tests
+      run: npm test
+
+    - name: Check Test Result
+      run: |
+        if [ ${{ job.status }} != "completed" ]; then
+          echo "Tests failed, cancelling merge."
+          exit 1
+        fi
