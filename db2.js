@@ -42,10 +42,10 @@ class Database2 {
         }
     }
 
-    async findSurveyById(collectionName, id) {
+    async findSurveyById(id) {
         try {
-            const collection = this.db.collection(collectionName);
-            const result = await collection.findOne({ _id: id });
+            const collection = this.db.collection('encuestas');
+            const result = await collection.findOne({ 'idEncuesta': parseInt(id)});
             return result;
         } catch (e) {
             console.error(`Failed to find document by ID: ${e}`);
@@ -62,10 +62,10 @@ class Database2 {
         }
     }
    
-    async updateSurveyById(collectionName, id, updatedDocument) {
+    async updateSurveyById(id, updatedDocument) {
         try {
-            const collection = this.db.collection(collectionName);
-            const result = await collection.updateOne({ _id: id }, { $set: updatedDocument });
+            const collection = this.db.collection('encuestas');
+            const result = await collection.updateOne({'idEncuesta': parseInt(id) }, { $set: updatedDocument });
             console.log('Document updated successfully:', result.modifiedCount);
             return result.modifiedCount;
         } catch (e) {
@@ -73,10 +73,10 @@ class Database2 {
         }
     }
 
-    async deleteSurveyById(collectionName, id) {
+    async deleteSurveyById(id) {
         try {
-            const collection = this.db.collection(collectionName);
-            const result = await collection.deleteOne({ _id: id });
+            const collection = this.db.collection('encuestas');
+            const result = await collection.deleteOne({'idEncuesta': parseInt(id) });
             console.log('Document deleted successfully:', result.deletedCount);
             return result.deletedCount;
         } catch (e) {

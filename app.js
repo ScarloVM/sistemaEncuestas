@@ -116,14 +116,14 @@ app.get('/surveys/:id', async (req, res) => { // r
     res.send(survey);
 });
 
-app.put('/surveys/:id', authenticateToken, async (req, res) => {
-    const survey = await appService.updateSurvey(req.body, req.params.id);
-    res.send(survey);
+app.put('/surveys/:id', async (req, res) => {
+    const survey = await appService.updateSurvey(req.params.id, req.body);
+    res.sendStatus(survey ? 200 : 404);
 });
 
-app.delete('/surveys/:id', authenticateToken, async (req, res) => {
-    const survey = await appService.deleteSurvey(req.params.id);
-    res.send(survey);
+app.delete('/surveys/:id', async (req, res) => {
+    const result = await appService.deleteSurvey(req.params.id);
+    res.sendStatus(result ? 200 : 404);
 });
 
 app.post('/surveys/:id/publish', async (req, res) => {

@@ -84,16 +84,16 @@ class AppService {
 
     async getSurveyById(id) {
         try{
-            return await this.database.getSurveyById(id);
+            return await this.database2.findSurveyById(id);
         }
         catch(e){
             console.error(`Failed to get survey by id ${e}`);
         }
     }
 
-    async updateSurvey(request_json, id) {
+    async updateSurvey(id, request_json) {
         try{
-            return await this.database.updateSurvey(request_json, id);
+            return await this.database2.updateSurveyById(id, request_json);
         }
         catch(e){
             console.error(`Failed to update survey ${e}`);
@@ -102,7 +102,7 @@ class AppService {
 
     async deleteSurvey(id) {
         try{
-            return await this.database.deleteSurvey(id);
+            return await this.database2.deleteSurveyById(id);
         }
         catch(e){
             console.error(`Failed to delete survey ${e}`);
