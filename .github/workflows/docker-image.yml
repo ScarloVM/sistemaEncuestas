@@ -32,12 +32,10 @@ jobs:
       run: |
         docker push javialroro/snupieencuestas:latest
 
-    - name: Install Dependencies
-      run: npm install
-
-    - name: Run Tests
-      run: npm test
-
+    - name: Install Dependencies 
+      run: |
+          npm install
+          npm test
     - name: Check Test Result
       run: |
         if [ ${{ job.status }} != "completed" ]; then
