@@ -35,7 +35,7 @@ jobs:
     - name: Start Docker Compose
       run: |
         docker-compose up -d
-        sleep 30 # Espera 30 segundos para que los servicios se inicien
+        sleep 60 # Espera 30 segundos para que los servicios se inicien
 
     - name: Run Tests
       run: |
