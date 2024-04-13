@@ -56,22 +56,3 @@
   ]
 }
 
-{
-    "user": "Jeffrey Perez", 
-    "user_email": "ginawood@example.org", 
-    "user_age": 39, 
-    "post": {
-        "title": "Random title for Jeffrey Perez", 
-        "content": "Random content for Jeffrey Perez Certain Congress development. Send explain recognize country most issue interesting. Bill fill say look member officer nor. She community anyone raise.", 
-        "timestamp": "1977-06-15T06:13:54.643692"
-        }, 
-    "comments": [{
-        "user": "Joann Bowen", 
-        "user_email": "sarabright@example.org", 
-        "user_age": 33, 
-        "comment": {
-            "text": "Random text Investment so suffer vote example her I. Practice yes kind letter page cup law. Artist join recent according.", 
-            "timestamp": "1999-08-13T05:02:06.865056"
-            }
-        }]
-}

@@ -1,6 +1,7 @@
 class AppService {
-    constructor(database) {
+    constructor(database,database2) {
         this.database = database;
+        this.database2 = database2;
     }
 // Autenticacion y Autorizacion
     async getUserByUsername(username) {

@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const {Database} = require('./db.js');
+const {Database2} = require('./db2.js');
 const {AppService} = require('./AppService.js');
 
 const app = express();
@@ -11,10 +12,13 @@ const DB_PORT = process.env.DB_PORT;
 const DB_NAME = process.env.DB_NAME;
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
+const MONGO_URL = process.env.MONGO_URL;
+const MONGO_NAME = process.env.MONGO_NAME;
+const db2 = new Database2(MONGO_NAME, MONGO_URL);
 
 const db = new Database(DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT);
 
-const appService = new AppService(db);
+const appService = new AppService(db, db2);
 
 app.use(express.json());
 
@@ -70,12 +74,12 @@ app.get('/auth/logout', (req, res) => {
 
 
 // Usuarios
-app.get('/users', authenticateToken, async (req, res) => {
+app.get('/users', authenticateToken, async (req, res) => { // r
     const tasks = await appService.getUsers();
     res.send(tasks);
 });
 
-app.get('/users/:id', async (req, res) => {
+app.get('/users/:id', async (req, res) => { // r
     const task = await appService.getUserById(req.params.id);
     res.send(task);
 });
@@ -102,12 +106,12 @@ app.post('/surveys', authenticateToken, async (req, res) => {
     }
 });
 
-app.get('/surveys', async (req, res) => {
+app.get('/surveys', async (req, res) => { // r
     const surveys = await appService.getSurveys();
     res.send(surveys);
 });
 
-app.get('/surveys/:id', async (req, res) => {
+app.get('/surveys/:id', async (req, res) => { // r
     const survey = await appService.getSurveyById(req.params.id);
     res.send(survey);
 });
@@ -139,7 +143,7 @@ app.post('/surveys/:id/questions', authenticateToken, async (req, res) => {
     }
 });
 
-app.get('/surveys/:id/questions', async (req, res) => {
+app.get('/surveys/:id/questions', async (req, res) => { //r
     const questions = await appService.getQuestions(req.params.id);
     res.send(questions);
 });
@@ -166,7 +170,7 @@ app.post('/surveys/:id/responses', async (req, res) => {
     }
 });
 
-app.get('/surveys/:id/responses', async (req, res) => {
+app.get('/surveys/:id/responses', async (req, res) => { // r
     const responses = await appService.getResponses(req.params.id);
     res.send(responses);
 });
@@ -183,12 +187,12 @@ app.post('/respondents', authenticateToken, async (req, res) => {
     }
 });
 
-app.get('/respondents', async (req, res) => {
+app.get('/respondents', async (req, res) => { // r
     const respondents = await appService.getRespondents();
     res.send(respondents);
 });
 
-app.get('/respondents/:id', async (req, res) => {
+app.get('/respondents/:id', async (req, res) => { // r
     const respondent = await appService.getRespondentById(req.params.id);
     res.send(respondent);
 });
@@ -204,7 +208,7 @@ app.delete('/respondents/:id', authenticateToken, async (req, res) => {
 });
 
 // Reportes y analisis
-app.get('/surveys/:id/analysis', async (req, res) => {
+app.get('/surveys/:id/analysis', async (req, res) => { // r
     const analysis = await appService.getAnalysis(req.params.id);
     res.send(analysis);
 });
