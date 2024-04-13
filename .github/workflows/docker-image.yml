@@ -32,10 +32,12 @@ jobs:
       run: |
         docker push javialroro/snupieencuestas:latest
 
-    - name: Install Dependencies 
+    - name: Install Dependencies and Run Tests
       run: |
-          npm install
-          npm test
+        git update-index --chmod=+x ./__tests__/appTests.js
+        npm install
+        npm test
+
     - name: Check Test Result
       run: |
         if [ ${{ job.status }} != "completed" ]; then
