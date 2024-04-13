@@ -39,6 +39,8 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
+    - name: Install Jest
+      run: npm install jest
 
     - name: Install Dependencies
       run: npm install
