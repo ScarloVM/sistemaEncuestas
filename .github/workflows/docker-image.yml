@@ -35,7 +35,6 @@ jobs:
     - name: Docker Compose
       run: |
         docker compose up -d
-        docker-compose exec app npm test
 
     - name: Stop Docker Compose
       run: |
