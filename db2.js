@@ -55,12 +55,13 @@ class Database2 {
     async findAllSurveys(collectionName) {
         try {
             const collection = this.db.collection(collectionName);
-            const result = await collection.find({}).toArray();
+            const result = await collection.find({ estado: "public" }).toArray();
             return result;
         } catch (e) {
-            console.error(`Failed to find all documents in collection: ${e}`);
+            console.error(`Failed to find all public surveys: ${e}`);
         }
     }
+    
    
     async updateSurveyById(id, updatedDocument) {
         try {
@@ -84,7 +85,8 @@ class Database2 {
         }
     }
 
-    // Preguntas de encuestas
+  
+    // respuestas de encuestas
 
     async insertResponse(response, survey_id) {
         try {

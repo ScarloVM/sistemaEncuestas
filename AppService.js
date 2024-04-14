@@ -73,6 +73,8 @@ class AppService {
         }
     }
 
+    
+
     async getSurveys(collectionName) {
         try{
             return await this.database2.findAllSurveys(collectionName);
@@ -109,14 +111,17 @@ class AppService {
         }
     }
 
-    async publishSurvey(id) {
-        try{
-            return await this.database.publishSurvey(id);
-        }
-        catch(e){
-            console.error(`Failed to publish survey ${e}`);
+    async publishSurvey(surveyId) {
+        try {
+            const updatedDocument = { 'estado': 'public' };
+            const result = await this.database2.updateSurveyById(surveyId, updatedDocument);
+            return result > 0; // Devuelve true si se actualizó al menos un documento
+        } catch (error) {
+            console.error(`Failed to publish survey: ${error}`);
+            return false;
         }
     }
+
 
 // Preguntas de encuestas
 

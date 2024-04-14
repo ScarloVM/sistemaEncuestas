@@ -149,9 +149,20 @@ app.delete('/surveys/:id', async (req, res) => {
 });
 
 app.post('/surveys/:id/publish', async (req, res) => {
-    const survey = await appService.publishSurvey(req.params.id);
-    res.send(survey);
+    const surveyId = req.params.id;
+    try {
+        const result = await appService.publishSurvey(surveyId);
+        if (result) {
+            res.status(200).send("Survey published successfully.");
+        } else {
+            res.status(404).send("Survey not found.");
+        }
+    } catch (error) {
+        console.error(`Failed to publish survey: ${error}`);
+        res.status(500).send("Failed to publish survey.");
+    }
 });
+
 
 // Preguntas de encuestas
 
