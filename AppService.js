@@ -1,3 +1,9 @@
+const redisClient = require('redis').createClient({
+    host: 'localhost', // Cambia esto por la dirección IP o el nombre de host de tu servidor de Redis
+    port: 6379, // Puerto predeterminado de Redis
+    // Otras opciones como `password` si es necesario
+});
+
 class AppService {
     constructor(database,database2) {
         this.database = database;
@@ -25,14 +31,58 @@ class AppService {
     }
 
 // Usuarios
+    // async getUsers() {
+    //     try{
+    //         return await this.database.getUsers();
+    //     }
+    //     catch(e){
+    //         console.error(`Failed to get users ${e}`);
+    //     }
+    // }
+
     async getUsers() {
-        try{
-            return await this.database.getUsers();
-        }
-        catch(e){
-            console.error(`Failed to get users ${e}`);
-        }
+        // Primero, intentamos obtener los usuarios de Redis
+        return new Promise((resolve, reject) => {
+            redisClient.get('users', async (error, data) => {
+                if (error) {
+                    console.error(`Failed to get users from Redis: ${error}`);
+                    // Si hay un error al acceder a Redis, intentamos obtener los usuarios de la base de datos
+                    try {
+                        const usersFromDB = await this.database.getUsers();
+                        // Si se obtienen los usuarios de la base de datos, los almacenamos en Redis para futuras consultas
+                        redisClient.set('users', JSON.stringify(usersFromDB), (error) => {
+                            if (error) {
+                                console.error(`Failed to store users in Redis: ${error}`);
+                            }
+                        });
+                        resolve(usersFromDB);
+                    } catch (error) {
+                        console.error(`Failed to get users from database: ${error}`);
+                        reject(error);
+                    }
+                } else if (data) {
+                    // Si encontramos los usuarios en Redis, los devolvemos
+                    resolve(JSON.parse(data));
+                } else {
+                    // Si no hay datos en Redis, intentamos obtener los usuarios de la base de datos
+                    try {
+                        const usersFromDB = await this.database.getUsers();
+                        // Si se obtienen los usuarios de la base de datos, los almacenamos en Redis para futuras consultas
+                        redisClient.set('users', JSON.stringify(usersFromDB), (error) => {
+                            if (error) {
+                                console.error(`Failed to store users in Redis: ${error}`);
+                            }
+                        });
+                        resolve(usersFromDB);
+                    } catch (error) {
+                        console.error(`Failed to get users from database: ${error}`);
+                        reject(error);
+                    }
+                }
+            });
+        });
     }
+    
 
     async getUserById(id) {
         try{
