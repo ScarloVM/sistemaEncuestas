@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const {Database} = require('./db.js');
 const {Database2} = require('./db2.js');
 const {AppService} = require('./AppService.js');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -21,6 +22,7 @@ const db = new Database(DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT);
 const appService = new AppService(db, db2);
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.get('/', (req, res) => {
     res.send('ola Kennors');
@@ -60,6 +62,7 @@ app.post('/auth/login', async (req, res) => {
         }
         // Generar un token JWT para el usuario autenticado
         const token = jwt.sign({ username: user.name, role: user.rol, id: user.id }, 'secreto');
+        res.cookie('token', token, { httpOnly: true });
         res.send({ token });
     } catch (error) {
         console.error(error);
@@ -68,30 +71,49 @@ app.post('/auth/login', async (req, res) => {
 });
 
 app.get('/auth/logout', (req, res) => {
-    res.send('Sesión cerrada correctamente');
+    // Obtener el token del encabezado de la solicitud
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).send('No se proporcionó ningún token de autenticación');
+    }
+
+    // Eliminar el token del cliente (según el método utilizado para almacenar el token)
+    // Por ejemplo, si el token se almacena en una cookie llamada 'token':
+    res.clearCookie('token');
+    
+    // O si el token se almacena en el almacenamiento local (local storage) del navegador:
+    // localStorage.removeItem('token');
+    
+    // O si el token se almacena en el almacenamiento de sesión (session storage) del navegador:
+    // sessionStorage.removeItem('token');
+
+    // Responder con un mensaje indicando que la sesión ha sido cerrada correctamente
+    res.status(200).send('Sesión cerrada correctamente');
 });
 
 
 
 // Usuarios
-app.get('/users', authenticateAdminCreator,  async (req, res) => { // r
+app.get('/users', authenticateAdmin,  async (req, res) => { // r
     const tasks = await appService.getUsers();
     res.send(tasks);
 });
 
-app.get('/users/:id', authenticateOwnRole, async (req, res) => { // r
+app.get('/users/:id', async (req, res) => { // r
     const task = await appService.getUserById(req.params.id);
     res.send(task);
 });
 
-app.put('/users/:id', authenticateToken, async (req, res) => {
+app.put('/users/:id', authenticateOwnRole, async (req, res) => {
     const task = await appService.updateUser(req.body,req.params.id);
-    res.send(task);
+    res.status(200).send("Usuario actualizado correctamente");
 });
 
-app.delete('/users/:id', authenticateToken, async (req, res) => {
+app.delete('/users/:id', authenticateAdmin, async (req, res) => {
     const task = await appService.deleteUser(req.params.id);
-    res.send(task);
+    res.status(200).send("Usuario eliminado correctamente");
 });
 
 // Encuestas
@@ -217,8 +239,7 @@ app.get('/surveys/:id/analysis', async (req, res) => { // r
 
 // Middleware para verificar el token JWT y autenticar al usuario
 function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Obtener el token JWT del encabezado de autorización
+    const token = req.cookies.token;
     if (!token) {
         return res.status(401).send('Se requiere un token de autenticación');
     }
@@ -240,8 +261,8 @@ function authenticateToken(req, res, next) {
 
 // Middleware para verificar el token JWT y autenticar al usuario como administrador
 function authenticateAdmin(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Obtener el token JWT del encabezado de autorización
+    const token = req.cookies.token
+    console.log(token)
     if (!token) {
         return res.status(401).send('Se requiere un token de autenticación');
     }
@@ -261,8 +282,7 @@ function authenticateAdmin(req, res, next) {
 }
 
 function authenticateAdminCreator(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Obtener el token JWT del encabezado de autorización
+    const token = req.cookies.token
     if (!token) {
         return res.status(401).send('Se requiere un token de autenticación');
     }
@@ -283,8 +303,7 @@ function authenticateAdminCreator(req, res, next) {
 }
 
 function authenticateOwnRole(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Obtener el token JWT del encabezado de autorización
+    const token = req.cookies.token;
     if (!token) {
         return res.status(401).send('Se requiere un token de autenticación');
     }
@@ -295,8 +314,11 @@ function authenticateOwnRole(req, res, next) {
         }
         // Verificar si el ID del usuario en el token coincide con el ID proporcionado en la solicitud
         // o si el rol del usuario en el token es igual a 1 (es decir, si es administrador)
-        if (decoded.id !== req.params.id && decoded.role !== 1) {
-            return res.status(403).send('Acceso denegado. No tienes permiso para acceder a este recurso');
+
+        if(decoded.role !==1){
+            if (decoded.id !== parseInt(req.params.id)) {
+                return res.status(403).send('Acceso denegado. No tiene permiso para acceder a este recurso');
+            }
         }
         next();
     });
