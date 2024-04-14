@@ -74,7 +74,7 @@ async createUser(username, email, password, rol) {
 
     async updateUser(request_json, id) {
         try {
-            await this.client.query('UPDATE users SET name = $1, email = $2 , password = $3, rol = $4 WHERE id = $5', [request_json.name,request_json.email, request_json.password,request_json.rol, id]);
+            await this.client.query('UPDATE users SET username = $1, password = $2 WHERE id = $3', [request_json.username, request_json.password, id]);
         } catch (e) {
             console.error(`Failed to update user ${e}`);
         }
@@ -89,6 +89,13 @@ async createUser(username, email, password, rol) {
     }
 
     //Encuestados
+    async createRespondent(request_json) {
+        try {
+            await this.client.query('INSERT INTO users (name, email, password, rol) VALUES ($1, $2, $3, 3)', [request_json.name, request_json.email, request_json.password]);
+        } catch (e) {
+            console.error(`Failed to create respondent ${e}`);
+        }
+    }
 
     async getRespondents() {
         try {
@@ -98,7 +105,31 @@ async createUser(username, email, password, rol) {
             console.error(`Failed to get encuestados ${e}`);
         }
     }
- 
+
+    async getRespondentById(id) {
+        try {
+            const result = await this.client.query('SELECT * FROM users WHERE id = $1 AND rol = 3', [id]);
+            return result.rows[0];
+        } catch (e) {
+            console.error(`Failed to get respondent by id ${e}`);
+        }
+    }
+
+    async updateRespondent(request_json, id) {
+        try {
+            await this.client.query('UPDATE users SET name = $1, email = $2 WHERE id = $3 AND rol = 3', [request_json.name, request_json.email, id]);
+        } catch (e) {
+            console.error(`Failed to update respondent ${e}`);
+        }
+    }
+
+    async deleteRespondent(id) {
+        try {
+            await this.client.query('DELETE FROM users WHERE id = $1 AND rol = 3', [id]);
+        } catch (e) {
+            console.error(`Failed to delete respondent ${e}`);
+        }
+    }
 }
 
 module.exports.Database = Database;

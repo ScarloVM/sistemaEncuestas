@@ -204,13 +204,13 @@ app.post('/surveys/:id/responses', async (req, res) => {
     }
 });
 
-app.get('/surveys/:id/responses', async (req, res) => { // r
+app.get('/surveys/:id/responses', authenticateAdminCreator, async (req, res) => { // r
     const responses = await appService.getResponses(req.params.id);
     res.send(responses);
 });
 
 // Encuestados
-app.post('/respondents', authenticateToken, async (req, res) => {
+app.post('/respondents', async (req, res) => {
     try {
         const respondent = await appService.createRespondent(req.body);
         res.status(201).send(respondent);
@@ -221,22 +221,22 @@ app.post('/respondents', authenticateToken, async (req, res) => {
     }
 });
 
-app.get('/respondents', async (req, res) => { // r
+app.get('/respondents',  authenticateAdminCreator, async (req, res) => { // r
     const respondents = await appService.getRespondents();
     res.send(respondents);
 });
 
-app.get('/respondents/:id', async (req, res) => { // r
+app.get('/respondents/:id', authenticateAdminCreator, async (req, res) => { // r
     const respondent = await appService.getRespondentById(req.params.id);
     res.send(respondent);
 });
 
-app.put('/respondents/:id', authenticateToken, async (req, res) => {
+app.put('/respondents/:id', authenticateAdminCreator, async (req, res) => {
     const respondent = await appService.updateRespondent(req.body, req.params.id);
     res.send(respondent);
 });
 
-app.delete('/respondents/:id', authenticateToken, async (req, res) => {
+app.delete('/respondents/:id', authenticateAdminCreator, async (req, res) => {
     const respondent = await appService.deleteRespondent(req.params.id);
     res.send(respondent);
 });

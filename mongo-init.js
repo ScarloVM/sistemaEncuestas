@@ -11,22 +11,42 @@ db.encuestas.insertOne({
     "questions": [
       {
         "idPregunta": 1,
-        "tipo": "open-ended",
+        "tipo": "abierta",
         "texto": "¿Cuál es tu opinión sobre nuestro servicio?",
         "required": true
       },
       {
         "idPregunta": 2,
-        "tipo": "single-choice",
+        "tipo": "eleccion_simple",
         "texto": "¿Estás satisfecho con el producto?",
-        "options": ["Sí", "No"],
+        "options": ["Excelente", "Regular", "Malo", "Muy malo"],
         "required": true
       },
       {
         "idPregunta": 3,
-        "tipo": "multiple-choice",
+        "tipo": "eleccion_multiple",
         "texto": "¿Qué productos te gustaría ver en el futuro?",
-        "options": ["Producto A", "Producto B", "Producto C"],
+        "options": ["Producto A", "Producto B", "Producto C", "Producto D"],
+        "required": false
+      },
+      {
+        "idPregunta": 4,
+        "tipo": "escala_calificacion",
+        "texto": "¿Qué tan satisfecho estás con nuestro servicio?",
+        "options": ["5", "4", "3", "2", "1"],
+        "required": false
+      },
+      {
+        "idPregunta": 5,
+        "tipo": "Si/No",
+        "texto": "¿Recomendarías nuestro servicio a un amigo?",
+        "options": ["Si", "No"],
+        "required": true
+      },
+      {
+        "idPregunta": 6,
+        "tipo": "numerica",
+        "texto": "¿Cuántos años tienes?",
         "required": false
       }
     ],
