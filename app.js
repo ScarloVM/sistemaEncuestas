@@ -5,18 +5,8 @@ const {Database} = require('./db.js');
 const {Database2} = require('./db2.js');
 const {AppService} = require('./AppService.js');
 const cookieParser = require('cookie-parser');
-const redis = require('redis');
 
 const app = express();
-const client = redis.createClient({
-    host: 'localhost', // Cambia esto por la dirección IP o el nombre de host de tu servidor de Redis
-    port: 6379, // Puerto predeterminado de Redis
-    // Otras opciones como `password` si es necesario
-});
-
-client.on('error', (err) => {
-    console.log("Error de Redis" + err);
-});
 
 const DB_HOST = process.env.DB_HOST;
 const DB_PORT = process.env.DB_PORT;

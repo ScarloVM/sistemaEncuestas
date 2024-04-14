@@ -11,14 +11,12 @@ services:
       DB_PASSWORD: mysecretpassword
       MONGO_URL: mongodb://mongo:27017
       MONGO_NAME : sistemaEncuestas
-      REDIS_HOST: redis-master
     ports:
       - 3000:3000
     networks:
       - web
     depends_on:
       - db
-      - redis-master
     volumes:
       - .:/usr/src/app
     command: npm start
@@ -78,6 +76,8 @@ services:
       - "./.data:/data"
     ports:
       - "6379:6379"
+    environment:
+      - REDIS_MASTER_HOST=127.0.0.1
     networks:
       - web
   
