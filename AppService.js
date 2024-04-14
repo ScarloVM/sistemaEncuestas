@@ -275,7 +275,7 @@ class AppService {
 
     async getAnalysis(survey_id) {
         try{
-            return await this.database.getAnalysis(survey_id);
+            return await this.database2.getAnalysis(survey_id);
         }
         catch(e){
             console.error(`Failed to get analysis ${e}`);

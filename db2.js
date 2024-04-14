@@ -103,6 +103,7 @@ class Database2 {
 
     async getResponses(survey_id) {
         try {
+            
             const collection = this.db.collection('encuestas');
             const result = await collection.findOne({ 'idEncuesta': parseInt(survey_id)});
             if (result) {
@@ -114,6 +115,71 @@ class Database2 {
         } catch (e) {
             console.error(`Failed to get response ${e}`);
             return [];
+        }
+    }
+
+    async getAnalysis(survey_id) {
+        try {
+            // Obtener la encuesta con el ID proporcionado
+            const collection = this.db.collection('encuestas');
+            const encuesta = await collection.findOne({ 'idEncuesta': parseInt(survey_id) });
+
+            if (!encuesta) {
+                console.log('No se encontró la encuesta con el ID especificado.');
+                return null;
+            }
+
+            // Inicializar el objeto de informe
+            const informe = {
+                idEncuesta: encuesta.idEncuesta,
+                titulo: encuesta.titulo,
+                reporte: {
+                    totalRespuestas: encuesta.respuestas.length,
+                    preguntas: []
+                }
+            };
+        
+            for (const pregunta of encuesta.questions) {
+                const preguntaInforme = {
+                    idPregunta: pregunta.idPregunta,
+                    texto: pregunta.texto,
+                    tipo: pregunta.tipo,
+                    respuestas: {}
+                };
+            
+                if (pregunta.tipo != 'abierta' && pregunta.tipo != 'numerica') {
+                    for (const respuesta of pregunta.options) {
+                        preguntaInforme.respuestas[respuesta] = 0;
+                    }
+                }
+            
+                for (const respuesta of encuesta.respuestas) {
+                    for (const respuestaPregunta of respuesta.respuesta){
+                        if (respuestaPregunta.idPregunta == pregunta.idPregunta) {
+                            if (respuestaPregunta.tipo == 'abierta' || respuestaPregunta.tipo == 'numerica') {
+                                if (preguntaInforme.respuestas[respuestaPregunta.respuesta] == undefined) {
+                                    preguntaInforme.respuestas[respuestaPregunta.respuesta] = 1;
+                                } else {
+                                    preguntaInforme.respuestas[respuestaPregunta.respuesta]++;
+                                }
+                            } else if (respuestaPregunta.tipo == 'eleccion_multiple') {
+                                console.log(respuestaPregunta.option_seleccionada);
+                                for (const opcion of respuestaPregunta.option_seleccionada) {
+                                    preguntaInforme.respuestas[opcion]++;
+                                }
+                            } else {
+                                preguntaInforme.respuestas[respuestaPregunta.option_seleccionada]++;
+                            }
+                        }
+                    }
+                }
+                informe.reporte.preguntas.push(preguntaInforme);
+            }
+        
+            return informe;
+        } catch (error) {
+            console.error('Error al generar informe de encuesta:', error);
+            return null;
         }
     }
 }
