@@ -166,29 +166,80 @@ app.post('/surveys/:id/publish', async (req, res) => {
 
 // Preguntas de encuestas
 
-app.post('/surveys/:id/questions', authenticateToken, async (req, res) => {
+app.post('/surveys/:id/questions', async (req, res) => {
+    const surveyId = req.params.id;
+    const newQuestion = req.body;
+
     try {
-        const question = await appService.createQuestion(req.body, req.params.id);
-        res.status(201).send(question);
+        const result = await appService.addQuestionToSurvey(surveyId, newQuestion);
+        if (result) {
+            res.status(201).send("Question added to survey successfully.");
+        } else {
+            res.status(404).send("Survey not found.");
+        }
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Error al crear la pregunta');
+        console.error(`Failed to add question to survey: ${error}`);
+        res.status(500).send("Failed to add question to survey.");
     }
 });
 
-app.get('/surveys/:id/questions', async (req, res) => { //r
-    const questions = await appService.getQuestions(req.params.id);
-    res.send(questions);
+
+app.get('/surveys/:id/questions', async (req, res) => {
+    const surveyId = req.params.id;
+    try {
+        const questions = await appService.getSurveyQuestions(surveyId);
+        if (questions) {
+            res.status(200).json(questions);
+        } else {
+            res.status(404).send("Survey not found.");
+        }
+    } catch (error) {
+        console.error(`Failed to get survey questions: ${error}`);
+        res.status(500).send("Failed to get survey questions.");
+    }
 });
 
-app.put('/surveys/:id/questions/:questionId', authenticateToken, async (req, res) => {
-    const question = await appService.updateQuestion(req.body, req.params.questionId);
-    res.send(question);
+
+app.put('/surveys/:id/questions/:questionId', async (req, res) => {
+    const surveyId = req.params.id;
+    const questionId = req.params.questionId;
+    const updatedQuestion = req.body; // Nueva información de la pregunta
+    
+    try {
+        // Actualiza la pregunta en la encuesta especificada
+        const result = await appService.updateSurveyQuestion(surveyId, questionId, updatedQuestion);
+        
+        if (result) {
+            res.status(200).send("Pregunta de encuesta actualizada correctamente.");
+        } else {
+            res.status(404).send("Encuesta o pregunta no encontrada.");
+        }
+    } catch (error) {
+        console.error(`Error al actualizar la pregunta de la encuesta: ${error}`);
+        res.status(500).send("Error al actualizar la pregunta de la encuesta.");
+    }
 });
 
-app.delete('/surveys/:id/questions/:questionId', authenticateToken, async (req, res) => {
-    const question = await appService.deleteQuestion(req.params.questionId);
-    res.send(question);
+
+
+
+app.delete('/surveys/:id/questions/:questionId', async (req, res) => {
+    const surveyId = req.params.id;
+    const questionId = req.params.questionId;
+    
+    try {
+        // Eliminar la pregunta de la encuesta especificada
+        const result = await appService.deleteSurveyQuestion(surveyId, questionId);
+        
+        if (result) {
+            res.status(200).send("Pregunta de encuesta eliminada correctamente.");
+        } else {
+            res.status(404).send("Encuesta o pregunta no encontrada.");
+        }
+    } catch (error) {
+        console.error(`Error al eliminar la pregunta de la encuesta: ${error}`);
+        res.status(500).send("Error al eliminar la pregunta de la encuesta.");
+    }
 });
 
 // Respuestas de encuestas
@@ -208,6 +259,29 @@ app.get('/surveys/:id/responses', authenticateAdminCreator, async (req, res) => 
     const responses = await appService.getResponses(req.params.id);
     res.send(responses);
 });
+
+
+
+app.put('/surveys/:id/questions/:questionId', async (req, res) => {
+    const surveyId = req.params.id;
+    const questionId = req.params.questionId;
+    const updatedQuestion = req.body; // Nueva información de la pregunta
+    
+    try {
+        // Actualiza la pregunta en la encuesta especificada
+        const result = await appService.updateSurveyQuestion(surveyId, questionId, updatedQuestion);
+        
+        if (result) {
+            res.status(200).send("Pregunta de encuesta actualizada correctamente.");
+        } else {
+            res.status(404).send("Encuesta o pregunta no encontrada.");
+        }
+    } catch (error) {
+        console.error(`Error al actualizar la pregunta de la encuesta: ${error}`);
+        res.status(500).send("Error al actualizar la pregunta de la encuesta.");
+    }
+});
+
 
 // Encuestados
 app.post('/respondents', async (req, res) => {

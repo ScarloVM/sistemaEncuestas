@@ -85,6 +85,8 @@ class Database2 {
         }
     }
 
+
+
   
     // respuestas de encuestas
 

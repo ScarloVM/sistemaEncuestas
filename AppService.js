@@ -125,41 +125,84 @@ class AppService {
 
 // Preguntas de encuestas
 
-    async createQuestion(request_json, survey_id) {
-        try{
-            return await this.database.createQuestion(request_json, survey_id);
-        }
-        catch(e){
-            console.error(`Failed to create question ${e}`);
+    async addQuestionToSurvey(surveyId, newQuestion) {
+        try {
+            const existingSurvey = await this.database2.findSurveyById(surveyId);
+            if (!existingSurvey) {
+                return false; 
+            }  
+            existingSurvey.questions.push(newQuestion);
+            const result = await this.database2.updateSurveyById(surveyId, existingSurvey);
+
+            return result > 0; 
+        } catch (error) {
+            console.error(`Failed to add question to survey: ${error}`);
+            return false;
         }
     }
 
-    async getQuestions(survey_id) {
-        try{
-            return await this.database.getQuestions(survey_id);
-        }
-        catch(e){
-            console.error(`Failed to get questions ${e}`);
-        }
-    }
 
-    async updateQuestion(request_json, question_id) {
-        try{
-            return await this.database.updateQuestion(request_json, question_id);
-        }
-        catch(e){
-            console.error(`Failed to update question ${e}`);
-        }
-    }
-
-    async deleteQuestion(question_id) {
-        try{
-            return await this.database.deleteQuestion(question_id);
-        }
-        catch(e){
-            console.error(`Failed to delete question ${e}`);
+    async getSurveyQuestions(surveyId) {
+        try {
+            const existingSurvey = await this.database2.findSurveyById(surveyId);
+            if (!existingSurvey) {
+                return null; 
+            }
+            return existingSurvey.questions;
+        } catch (error) {
+            console.error(`Failed to get survey questions: ${error}`);
+            return null;
         }
     }
+    
+    async updateSurveyQuestion(surveyId, questionId, updatedQuestion) {
+        try {
+            // Obtener la encuesta por su ID
+            const existingSurvey = await this.database2.findSurveyById(surveyId);
+            if (!existingSurvey) {
+                return false; // Encuesta no encontrada
+            }
+            
+            // Buscar la pregunta por su ID dentro de la encuesta
+            const questionIndex = existingSurvey.questions.findIndex(q => q.idPregunta === parseInt(questionId));
+            if (questionIndex === -1) {
+                return false; // Pregunta no encontrada en la encuesta
+            }
+            
+            // Actualizar la pregunta con la nueva información
+            existingSurvey.questions[questionIndex] = updatedQuestion;
+            
+            // Actualizar la encuesta en la base de datos
+            const result = await this.database2.updateSurveyById(surveyId, existingSurvey);
+            
+            return result > 0; // Devolver true si la encuesta se actualizó correctamente
+        } catch (error) {
+            console.error(`Error al actualizar la pregunta de la encuesta: ${error}`);
+            throw error;
+        }
+    }
+    
+    async deleteSurveyQuestion(surveyId, questionId) {
+        try {
+            // Obtener la encuesta por su ID
+            const existingSurvey = await this.database2.findSurveyById(surveyId);
+            if (!existingSurvey) {
+                return false; // Encuesta no encontrada
+            }
+            
+            // Filtrar la lista de preguntas para eliminar la pregunta específica por su ID
+            existingSurvey.questions = existingSurvey.questions.filter(q => q.idPregunta !== parseInt(questionId));
+            
+            // Actualizar la encuesta en la base de datos para reflejar los cambios
+            const result = await this.database2.updateSurveyById(surveyId, existingSurvey);
+            
+            return result > 0; // Devolver true si la encuesta se actualizó correctamente
+        } catch (error) {
+            console.error(`Error al eliminar la pregunta de la encuesta: ${error}`);
+            throw error;
+        }
+    }
+    
 
 // Respuestas de encuestas
 
