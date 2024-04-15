@@ -5,11 +5,11 @@ class AppService {
         this.redisClient = redisClient;
     }
 // Autenticacion y Autorizacion
-    async getUserByUsername(username) {
+    async getUserByEmail(username) {
         // Implementa la lógica para consultar la base de datos y obtener el usuario por su nombre de usuario
         // Por ejemplo, utilizando un método de consulta SQL
         try {
-            return await this.database.getUserByUsername(username); // Devuelve el primer usuario encontrado con ese nombre de usuario
+            return await this.database.getUserByEmail(username); // Devuelve el primer usuario encontrado con ese nombre de usuario
         } catch (error) {
             console.error('Error al obtener el usuario por nombre de usuario:', error);
             throw error;

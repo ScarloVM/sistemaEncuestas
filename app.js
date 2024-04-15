@@ -39,9 +39,9 @@ app.post('/auth/register', async (req, res) => {
     try {
         
         // Verificar si el usuario ya existe en la base de datos
-        const existingUser = await appService.getUserByUsername(req.body.name);
+        const existingUser = await appService.getUserByEmail(req.body.email);
         if (existingUser) {
-            return res.status(400).send('El nombre de usuario ya está en uso');
+            return res.status(400).send('El email ya está en uso');
         }
         // Hash de la contraseña antes de guardarla en la base de datos
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -57,7 +57,7 @@ app.post('/auth/register', async (req, res) => {
 app.post('/auth/login', async (req, res) => {
     try {
         // Obtener el usuario de la base de datos
-        const user = await appService.getUserByUsername(req.body.name);
+        const user = await appService.getUserByEmail(req.body.email);
         if (!user) {
             return res.status(401).send('Nombre de usuario o contraseña incorrectos');
         }
@@ -274,7 +274,7 @@ app.put('/surveys/:id/questions/:questionId', async (req, res) => {
 // Encuestados
 app.post('/respondents', async (req, res) => {
     try {
-        const existingUser = await appService.getUserByUsername(req.body.name);
+        const existingUser = await appService.getUserByEmail(req.body.email);
         if (existingUser) {
             return res.status(400).send('El nombre de usuario ya está en uso');
         }

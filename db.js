@@ -44,12 +44,12 @@ async createUser(username, email, password, rol) {
 }
 
 
-    async getUserByUsername(username) {
+    async getUserByEmail(email) {
         try {
-            const result = await this.client.query('SELECT * FROM users WHERE name = $1', [username]);
+            const result = await this.client.query('SELECT * FROM users WHERE email = $1', [email]);
             return result.rows[0];
         } catch (e) {
-            console.error(`Failed to get user by username ${e}`);
+            console.error(`Failed to get user by email ${e}`);
         }
     }
 // Usuarios
@@ -74,7 +74,7 @@ async createUser(username, email, password, rol) {
 
     async updateUser(request_json, id) {
         try {
-            await this.client.query('UPDATE users SET username = $1, password = $2 WHERE id = $3', [request_json.username, request_json.password, id]);
+            await this.client.query('UPDATE users SET name = $1, email = $2 , password = $3, rol = $4 WHERE id = $5', [request_json.name,request_json.email, request_json.password,request_json.rol, id])
         } catch (e) {
             console.error(`Failed to update user ${e}`);
         }
