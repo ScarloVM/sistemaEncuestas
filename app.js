@@ -275,7 +275,14 @@ app.put('/surveys/:id/questions/:questionId', async (req, res) => {
 // Encuestados
 app.post('/respondents', async (req, res) => {
     try {
-        const respondent = await appService.createRespondent(req.body);
+        const existingUser = await appService.getUserByUsername(req.body.name);
+        if (existingUser) {
+            return res.status(400).send('El nombre de usuario ya está en uso');
+        }
+        // Hash de la contraseña antes de guardarla en la base de datos
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        // Guardar el nuevo encuestado en la base de datos
+        const respondent = await appService.createRespondent(req.body.name, req.body.email, hashedPassword);
         res.status(201).send(respondent);
     }
     catch (error) {

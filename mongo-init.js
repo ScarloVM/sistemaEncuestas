@@ -6,7 +6,7 @@ db.encuestas.insertOne({
     "idEncuesta": 1,
     "titulo": "Encuesta de satisfacción del cliente",
     "descripcion": "Esta encuesta tiene como objetivo recopilar información sobre la satisfacción del cliente.",
-    "creador": "user123",
+    "correoCreador": "user123",
     "estado": "public",
     "questions": [
       {
@@ -52,7 +52,7 @@ db.encuestas.insertOne({
     ],
     "respuestas": [
       {
-        "idEncuestado": 1,
+        "correoEncuestado": 1,
         "respuesta": [
           {
             "idPregunta": 1,
@@ -99,7 +99,7 @@ db.encuestas.insertOne({
         ]
       },
       {
-        "idEncuestado": 2,
+        "correoEncuestado": 2,
         "respuesta": [
           {
             "idPregunta": 1,
@@ -146,7 +146,7 @@ db.encuestas.insertOne({
         ]
       },
       {
-        "idEncuestado": 3,
+        "correoEncuestado": 3,
         "respuesta": [
           {
             "idPregunta": 1,
@@ -193,7 +193,7 @@ db.encuestas.insertOne({
         ]
       },
       {
-        "idEncuestado": 4,
+        "correoEncuestado": 4,
         "respuesta": [
           {
             "idPregunta": 1,
@@ -240,7 +240,7 @@ db.encuestas.insertOne({
         ]
       },
       {
-        "idEncuestado": 5,
+        "correoEncuestado": 5,
         "respuesta": [
           {
             "idPregunta": 1,

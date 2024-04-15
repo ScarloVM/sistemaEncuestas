@@ -273,9 +273,9 @@ class AppService {
 
 // Encuestados
 
-    async createRespondent(request_json) {
+    async createRespondent(user, email, password) {
         try{
-            return await this.database.createRespondent(request_json);
+            return await this.database.createRespondent(user, email, password);
         }
         catch(e){
             console.error(`Failed to create respondent ${e}`);

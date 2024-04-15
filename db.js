@@ -89,9 +89,9 @@ async createUser(username, email, password, rol) {
     }
 
     //Encuestados
-    async createRespondent(request_json) {
+    async createRespondent(username, email, password) {
         try {
-            await this.client.query('INSERT INTO users (name, email, password, rol) VALUES ($1, $2, $3, 3)', [request_json.name, request_json.email, request_json.password]);
+            await this.client.query('INSERT INTO users (name, email, password, rol) VALUES ($1, $2, $3, 3)', [username, email, password]);
         } catch (e) {
             console.error(`Failed to create respondent ${e}`);
         }
