@@ -37,48 +37,26 @@ class AppService {
 
     async getUsers() {
         try {
-            // Intenta obtener los datos de Redis
-            const usersData = await this.getUsersFromCache();
-            if (usersData) {
-                console.log('Users data found in Redis');
-                return usersData;
+            // Intentamos obtener los usuarios desde la caché de Redis
+            const cachedUsers = await this.redisClient.get('users');
+
+            if (cachedUsers) {
+                // Si encontramos usuarios en la caché, los devolvemos
+                return JSON.parse(cachedUsers);
+            } else {
+                // Si no hay usuarios en la caché, los obtenemos de la base de datos
+                const users = await this.database.getUsers();
+
+                // Guardamos los usuarios en la caché de Redis para futuras consultas
+                await this.redisClient.set('users', JSON.stringify(users));
+
+                // Devolvemos los usuarios obtenidos de la base de datos
+                return users;
             }
-
-            // Si los datos no están en Redis, obténlos de la base de datos
-            console.log('Users data not found in Redis. Retrieving from database...');
-            const dbUsersData = await this.database.getUsers();
-
-            // Guarda los datos en Redis para futuras solicitudes
-            await this.saveUsersToCache(dbUsersData);
-            return dbUsersData;
         } catch (error) {
-            console.error(`Failed to get users: ${error}`);
-            throw error; // Propaga el error para que lo maneje el llamador
+            console.error('Error al obtener usuarios:', error);
+            throw error;
         }
-    }
-
-    async getUsersFromCache() {
-        return new Promise((resolve, reject) => {
-            this.redisClient.get('users', (error, data) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(data ? JSON.parse(data) : null);
-                }
-            });
-        });
-    }
-
-    async saveUsersToCache(usersData) {
-        return new Promise((resolve, reject) => {
-            this.redisClient.set('users', JSON.stringify(usersData), 'EX', 3600, (error, reply) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(reply);
-                }
-            });
-        });
     }
 
     async getUserById(id) {
