@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const {Database} = require('./db.js');
 const {Database2} = require('./db2.js');
 const {AppService} = require('./AppService.js');
-const redis = require('redis');
+const {RedisClient} = require('./redis.js');
 const cookieParser = require('cookie-parser');
 
 const app = express();
@@ -20,11 +20,7 @@ const REDIS_HOST = process.env.REDIS_HOST;
 const REDIS_PORT = process.env.REDIS_PORT;
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
 
-const redisClient = redis.createClient({
-    host: REDIS_HOST,
-    port: REDIS_PORT,
-    password: REDIS_PASSWORD
-});
+const redisClient = new RedisClient(REDIS_HOST, REDIS_PORT, REDIS_PASSWORD);
 
 const db2 = new Database2(MONGO_NAME, MONGO_URL,'root', 'example');
 
