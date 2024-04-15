@@ -1,12 +1,8 @@
 const redis = require('redis');
 
 class RedisClient {
-    constructor(host, port, password) {
-        this.client = redis.createClient({
-            host: host,
-            port: port,
-            password: password
-        });
+    constructor(host, port) {
+        this.client = redis.createClient({ url: `redis://${host}:${port}`});
         this.connect();
     }
 

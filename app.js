@@ -18,9 +18,8 @@ const MONGO_URL = process.env.MONGO_URL;
 const MONGO_NAME = process.env.MONGO_NAME;
 const REDIS_HOST = process.env.REDIS_HOST;
 const REDIS_PORT = process.env.REDIS_PORT;
-const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
 
-const redisClient = new RedisClient(REDIS_HOST, REDIS_PORT, REDIS_PASSWORD);
+const redisClient = new RedisClient(REDIS_HOST, REDIS_PORT);
 
 const db2 = new Database2(MONGO_NAME, MONGO_URL,'root', 'example');
 

@@ -13,7 +13,6 @@ services:
       MONGO_NAME : sistemaEncuestas
       REDIS_HOST: cache
       REDIS_PORT: 6379
-      REDIS_PASSWORD: mysecretpassword
     ports:
       - 3000:3000
     networks:
@@ -75,14 +74,12 @@ services:
       - mongo
   
   cache:
-    image: redis:6-alpine
+    image: redis:latest
     restart: always
     volumes:
       - "./.data:/data"
     ports:
       - '6379:6379'
-    command: 
-      redis-server --save 20 1 --loglevel warning --requirepass mysecretpassword
     networks:
       - web
   
