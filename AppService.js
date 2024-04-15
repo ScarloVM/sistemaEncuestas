@@ -39,11 +39,15 @@ class AppService {
         try {
             // Intentamos obtener los usuarios desde la caché de Redis
             const cachedUsers = await this.redisClient.get('users');
+            console.log('cachedUsers:', cachedUsers);
 
             if (cachedUsers) {
                 // Si encontramos usuarios en la caché, los devolvemos
+                console.log('Usuarios obtenidos de la caché de Redis');
                 return JSON.parse(cachedUsers);
+
             } else {
+                console.log('No se encontraron usuarios en la caché de Redis');
                 // Si no hay usuarios en la caché, los obtenemos de la base de datos
                 const users = await this.database.getUsers();
 
