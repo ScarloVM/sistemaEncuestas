@@ -126,17 +126,17 @@ app.get('/surveys/:id', async (req, res) => { // r
     res.send(survey);
 });
 
-app.put('/surveys/:id', authenticateAdminCreator, authenticateAdminOrSurveyCreator, async (req, res) => {
+app.put('/surveys/:id', authenticateAdminOrSurveyCreator, async (req, res) => {
     const survey = await appService.updateSurvey(req.params.id, req.body);
     res.sendStatus(survey ? 200 : 404);
 });
 
-app.delete('/surveys/:id',authenticateAdminCreator, authenticateAdminOrSurveyCreator, async (req, res) => {
+app.delete('/surveys/:id', authenticateAdminOrSurveyCreator, async (req, res) => {
     const result = await appService.deleteSurvey(req.params.id);
     res.sendStatus(result ? 200 : 404);
 });
 
-app.post('/surveys/:id/publish',authenticateAdminCreator, authenticateAdminOrSurveyCreator, async (req, res) => {
+app.post('/surveys/:id/publish', authenticateAdminOrSurveyCreator, async (req, res) => {
     const surveyId = req.params.id;
     try {
         const result = await appService.publishSurvey(surveyId);
@@ -154,7 +154,7 @@ app.post('/surveys/:id/publish',authenticateAdminCreator, authenticateAdminOrSur
 
 // Preguntas de encuestas
 
-app.post('/surveys/:id/questions', async (req, res) => {
+app.post('/surveys/:id/questions', authenticateAdminOrSurveyCreator , async (req, res) => {
     const surveyId = req.params.id;
     const newQuestion = req.body;
 
@@ -188,7 +188,7 @@ app.get('/surveys/:id/questions', async (req, res) => {
 });
 
 
-app.put('/surveys/:id/questions/:questionId', async (req, res) => {
+app.put('/surveys/:id/questions/:questionId', authenticateAdminOrSurveyCreator, async (req, res) => {
     const surveyId = req.params.id;
     const questionId = req.params.questionId;
     const updatedQuestion = req.body; // Nueva información de la pregunta
@@ -211,7 +211,7 @@ app.put('/surveys/:id/questions/:questionId', async (req, res) => {
 
 
 
-app.delete('/surveys/:id/questions/:questionId', async (req, res) => {
+app.delete('/surveys/:id/questions/:questionId', authenticateAdminOrSurveyCreator, async (req, res) => {
     const surveyId = req.params.id;
     const questionId = req.params.questionId;
     
