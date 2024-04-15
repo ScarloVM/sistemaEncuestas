@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const {Database} = require('./db.js');
 const {Database2} = require('./db2.js');
 const {AppService} = require('./AppService.js');
+const redis = require('redis');
 const cookieParser = require('cookie-parser');
 
 const app = express();
@@ -15,11 +16,21 @@ const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
 const MONGO_URL = process.env.MONGO_URL;
 const MONGO_NAME = process.env.MONGO_NAME;
+const REDIS_HOST = process.env.REDIS_HOST;
+const REDIS_PORT = process.env.REDIS_PORT;
+const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
+
+const redisClient = redis.createClient({
+    host: REDIS_HOST,
+    port: REDIS_PORT,
+    password: REDIS_PASSWORD
+});
+
 const db2 = new Database2(MONGO_NAME, MONGO_URL,'root', 'example');
 
 const db = new Database(DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT);
 
-const appService = new AppService(db, db2);
+const appService = new AppService(db, db2, redisClient);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -78,7 +89,7 @@ app.get('/auth/logout', (req, res) => {
 
 
 // Usuarios
-app.get('/users', authenticateAdmin,  async (req, res) => { // r
+app.get('/users',  async (req, res) => { // r
     const tasks = await appService.getUsers();
     res.send(tasks);
 });

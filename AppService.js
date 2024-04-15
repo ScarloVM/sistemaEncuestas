@@ -1,7 +1,8 @@
 class AppService {
-    constructor(database,database2) {
+    constructor(database,database2, redisClient) {
         this.database = database;
         this.database2 = database2;
+        this.redisClient = redisClient;
     }
 // Autenticacion y Autorizacion
     async getUserByUsername(username) {
@@ -25,13 +26,59 @@ class AppService {
     }
 
 // Usuarios
+    // async getUsers() {
+    //     try{
+    //         return await this.database.getUsers();
+    //     }
+    //     catch(e){
+    //         console.error(`Failed to get users ${e}`);
+    //     }
+    // }
+
     async getUsers() {
-        try{
-            return await this.database.getUsers();
+        try {
+            // Intenta obtener los datos de Redis
+            const usersData = await this.getUsersFromCache();
+            if (usersData) {
+                console.log('Users data found in Redis');
+                return usersData;
+            }
+
+            // Si los datos no están en Redis, obténlos de la base de datos
+            console.log('Users data not found in Redis. Retrieving from database...');
+            const dbUsersData = await this.database.getUsers();
+
+            // Guarda los datos en Redis para futuras solicitudes
+            await this.saveUsersToCache(dbUsersData);
+            return dbUsersData;
+        } catch (error) {
+            console.error(`Failed to get users: ${error}`);
+            throw error; // Propaga el error para que lo maneje el llamador
         }
-        catch(e){
-            console.error(`Failed to get users ${e}`);
-        }
+    }
+
+    async getUsersFromCache() {
+        return new Promise((resolve, reject) => {
+            this.redisClient.get('users', (error, data) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(data ? JSON.parse(data) : null);
+                }
+            });
+        });
+    }
+
+    async saveUsersToCache(usersData) {
+        return new Promise((resolve, reject) => {
+            this.redisClient.set('users', JSON.stringify(usersData), 'EX', 3600, (error, reply) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(reply);
+                }
+            });
+        });
     }
 
     async getUserById(id) {
