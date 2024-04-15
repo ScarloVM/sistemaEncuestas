@@ -71,25 +71,7 @@ app.post('/auth/login', async (req, res) => {
 });
 
 app.get('/auth/logout', (req, res) => {
-    // Obtener el token del encabezado de la solicitud
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (!token) {
-        return res.status(401).send('No se proporcionó ningún token de autenticación');
-    }
-
-    // Eliminar el token del cliente (según el método utilizado para almacenar el token)
-    // Por ejemplo, si el token se almacena en una cookie llamada 'token':
     res.clearCookie('token');
-    
-    // O si el token se almacena en el almacenamiento local (local storage) del navegador:
-    // localStorage.removeItem('token');
-    
-    // O si el token se almacena en el almacenamiento de sesión (session storage) del navegador:
-    // sessionStorage.removeItem('token');
-
-    // Responder con un mensaje indicando que la sesión ha sido cerrada correctamente
     res.status(200).send('Sesión cerrada correctamente');
 });
 
