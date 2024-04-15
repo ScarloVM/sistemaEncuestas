@@ -67,7 +67,7 @@ app.post('/auth/login', async (req, res) => {
             return res.status(401).send('Nombre de usuario o contraseña incorrectos');
         }
         // Generar un token JWT para el usuario autenticado
-        const token = jwt.sign({ username: user.name, role: user.rol, id: user.id }, 'secreto');
+        const token = jwt.sign({ username: user.name, role: user.rol, id: user.id , email: user.email}, 'secreto');
         res.cookie('token', token, { httpOnly: true });
         res.send({ token });
     } catch (error) {
