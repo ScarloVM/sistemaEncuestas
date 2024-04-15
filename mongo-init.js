@@ -6,7 +6,7 @@ db.encuestas.insertOne({
     "idEncuesta": 1,
     "titulo": "Encuesta de satisfacción del cliente",
     "descripcion": "Esta encuesta tiene como objetivo recopilar información sobre la satisfacción del cliente.",
-    "correoCreador": "user123",
+    "emailCreador": "prueba",
     "estado": "public",
     "questions": [
       {

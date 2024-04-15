@@ -106,7 +106,7 @@ app.delete('/users/:id', authenticateAdmin, async (req, res) => {
 
 // Encuestas
 
-app.post('/surveys',  async (req, res) => {
+app.post('/surveys', authenticateAdminCreator, async (req, res) => {
     try {
         const survey = await appService.createSurvey(req.body);
         res.status(201).send(survey);
@@ -126,17 +126,17 @@ app.get('/surveys/:id', async (req, res) => { // r
     res.send(survey);
 });
 
-app.put('/surveys/:id', async (req, res) => {
+app.put('/surveys/:id', authenticateAdminCreator, authenticateAdminOrSurveyCreator, async (req, res) => {
     const survey = await appService.updateSurvey(req.params.id, req.body);
     res.sendStatus(survey ? 200 : 404);
 });
 
-app.delete('/surveys/:id', async (req, res) => {
+app.delete('/surveys/:id',authenticateAdminCreator, authenticateAdminOrSurveyCreator, async (req, res) => {
     const result = await appService.deleteSurvey(req.params.id);
     res.sendStatus(result ? 200 : 404);
 });
 
-app.post('/surveys/:id/publish', async (req, res) => {
+app.post('/surveys/:id/publish',authenticateAdminCreator, authenticateAdminOrSurveyCreator, async (req, res) => {
     const surveyId = req.params.id;
     try {
         const result = await appService.publishSurvey(surveyId);
@@ -381,6 +381,52 @@ function authenticateAdminCreator(req, res, next) {
     });
 
 }
+
+async function authenticateAdminOrSurveyCreator(req, res, next) {
+    const token = req.cookies.token;
+    if (!token) {
+        return res.status(401).send('Se requiere un token de autenticación');
+    }
+    
+    // Verificar y decodificar el token JWT
+    jwt.verify(token, 'secreto', async (err, decoded) => {
+        if (err) {
+            return res.status(403).send('Token de autenticación inválido');
+        }
+        
+        // Extraer la información del payload del token
+        //const { email, role } = decoded;
+
+        // Verificar si el usuario es administrador o creador de la encuesta
+        if (decoded.role === 1) {
+            // El usuario es administrador
+            next();
+        } else {
+            // El usuario no es administrador, comprobamos si es el creador de la encuesta
+            const surveyId = req.params.id;
+            try {
+                const survey = await db2.findSurveyById(surveyId); 
+                if (!survey) {
+                    return res.status(404).send('Encuesta no encontrada');
+                }
+                const creatorEmail = survey.emailCreador;
+                console.log("creatorEmail: ", creatorEmail, "email: ", decoded.email)
+                if (decoded.email === creatorEmail) {
+                    // El usuario es el creador de la encuesta
+                    next();
+                } else {
+                    // El usuario no es administrador ni el creador de la encuesta
+                    return res.status(403).send('Acceso denegado. Se requiere rol de administrador o ser el creador de la encuesta');
+                }
+            } catch (error) {
+                console.error(`Error al verificar el creador de la encuesta: ${error}`);
+                return res.status(500).send('Error interno del servidor');
+            }
+        }
+    });
+}
+
+
 
 function authenticateOwnRole(req, res, next) {
     const token = req.cookies.token;
