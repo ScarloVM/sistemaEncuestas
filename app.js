@@ -84,7 +84,7 @@ app.get('/auth/logout', (req, res) => {
 
 
 // Usuarios
-app.get('/users',  async (req, res) => { // r
+app.get('/users',  authenticateAdmin, async (req, res) => { // r
     const tasks = await appService.getUsers();
     res.send(tasks);
 });

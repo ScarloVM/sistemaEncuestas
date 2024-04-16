@@ -24,8 +24,8 @@ class RedisClient {
         this.client.set(key, value, redis.print);
     }
 
-    get(key, callback) {
-        this.client.get(key, callback);
+    get(key) {
+        this.client.get(key, redis.print);
     }
 }
 
