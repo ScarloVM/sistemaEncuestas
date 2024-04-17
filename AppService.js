@@ -514,9 +514,14 @@ class AppService {
             else{
                 console.log('Respondent not found in Redis cache');
                 const respondent = await this.database.getRespondentById(id);
-                await this.redisClient.set(`respondent:${id}`, JSON.stringify(respondent));
-                await this.redisClient.expire(`respondent:${id}`, tiempoExpi); // Expires in 60 seconds
-                return respondent;
+                if (respondent) {
+                    await this.redisClient.set(`respondent:${id}`, JSON.stringify(respondent));
+                    await this.redisClient.expire(`respondent:${id}`, tiempoExpi); // Expires in 60 seconds
+                    return respondent;
+                } else {
+                    console.log('Respondent not found in database');
+                    return null; // or handle the case where respondent is not found
+                }
             }
         }
         catch(e){
