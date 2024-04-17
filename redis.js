@@ -27,6 +27,14 @@ class RedisClient {
     get(key) {
         return this.client.get(key, redis.print);
     }
+
+    del(key) {
+        this.client.del(key, redis.print);
+    }
+
+    expire(key, seconds) {
+        this.client.expire(key, seconds, redis.print);
+    }
 }
 
 module.exports.RedisClient = RedisClient;
