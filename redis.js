@@ -25,7 +25,7 @@ class RedisClient {
     }
 
     get(key) {
-        this.client.get(key, redis.print);
+        return this.client.get(key, redis.print);
     }
 }
 
