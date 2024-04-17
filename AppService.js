@@ -419,15 +419,15 @@ class AppService {
 
     async insertResponse(request_json, survey_id) {
         try{
-            const cachedSurveyId = await this.redisClient.get(`survey:${surveyId}`);
+            const cachedSurveyId = await this.redisClient.get(`survey:${survey_id}`);
             const cachedSurveys = await this.redisClient.get('surveys');
 
             if (cachedSurveyId){
-                await this.redisClient.del(`survey:${surveyId}`);
-                console.log(`Survey with ID ${surveyId} deleted from cache`);
+                await this.redisClient.del(`survey:${survey_id}`);
+                console.log(`Survey with ID ${survey_id} deleted from cache`);
             }
             else{
-                console.log(`Survey with ID ${surveyId} not found in cache`);
+                console.log(`Survey with ID ${survey_id} not found in cache`);
             }
 
             if (cachedSurveys){
