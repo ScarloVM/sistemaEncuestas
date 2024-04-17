@@ -1,5 +1,5 @@
 const { Client } = require('pg');
-
+const bcrypt = require('bcryptjs');
 class Database {
     constructor(database, user, password, host, port) {
         this.database = database;
@@ -74,7 +74,8 @@ async createUser(username, email, password, rol) {
 
     async updateUser(request_json, id) {
         try {
-            await this.client.query('UPDATE users SET name = $1, email = $2 , password = $3, rol = $4 WHERE id = $5', [request_json.name,request_json.email, request_json.password,request_json.rol, id])
+            const hashedPassword = await bcrypt.hash(request_json.password, 10);
+            await this.client.query('UPDATE users SET name = $1, email = $2 , password = $3, rol = $4 WHERE id = $5', [request_json.name,request_json.email, hashedPassword,request_json.rol, id])
         } catch (e) {
             console.error(`Failed to update user ${e}`);
         }

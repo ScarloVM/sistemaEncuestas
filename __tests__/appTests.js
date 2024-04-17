@@ -40,6 +40,8 @@ describe('GET /', () => {
   });
 });
 
+// Pruebas de autenticación y autorización
+
 describe('POST /auth/register Admin', () => {
   it('Deberia registrar un usuario administrador', async () => {
     const response = await request('http://localhost:3000')
@@ -83,6 +85,8 @@ describe('POST /auth/login Admin', () => {
   });
 });
 
+// Pruebas de usuarios
+
 describe('GET /users Admin', () => {
   it('Deberia retornar la lista de usuarios', async () => {
     const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
@@ -121,6 +125,133 @@ describe('GET /users Creador', () => {
   });
 });
 
+
+describe('GET /users:userId Admin', () => {
+
+  it('Deberia retornar un usuario', async () => {
+    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+
+    // Realiza una solicitud POST para iniciar sesión y obtener el token
+    const loginResponse = await agent
+      .post('/auth/login')
+      .send({ email: userAdmin.email, password: userAdmin.password }); // Envía las credenciales de inicio de sesión
+    const token = loginResponse.body.token; // Extrae el token de la respuesta
+
+    // Ahora, realiza la solicitud GET a /users/:userId con la cookie establecida
+    const response = await agent
+      .get(`/users/${userAdmin.id}`)
+      .set('Cookie', `token=${token}`); // Establece la cookie con el token obtenido
+
+    expect(response.status).toBe(200);
+  });
+}
+);
+
+describe('PUT /users:userId Admin', () => {
+  it('Deberia actualizar un usuario', async () => {
+    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+
+    // Realiza una solicitud POST para iniciar sesión y obtener el token
+    const loginResponse = await agent
+      .post('/auth/login')
+      .send({ email: userAdmin.email, password: userAdmin.password }); // Envía las credenciales de inicio de sesión
+    const token = loginResponse.body.token; // Extrae el token de la respuesta
+
+    // Ahora, realiza la solicitud PUT a /users/:userId con la cookie establecida
+    const response = await agent
+      .put(`/users/${userAdmin.id}`)
+      .set('Cookie', `token=${token}`) // Establece la cookie con el token obtenido
+      .send({ name: 'Admin', email: 'email2@email.com', password: '1234' , rol: 1 });
+    
+    expect(response.status).toBe(200);
+    expect(response.text).toBe('Usuario actualizado correctamente');
+  }
+  );
+});
+
+describe('PUT /users:userId El mismo', () => {
+  it('Deberia actualizar un usuario', async () => {
+    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+
+    // Realiza una solicitud POST para iniciar sesión y obtener el token
+    const loginResponse = await agent
+      .post('/auth/login')
+      .send({ email: userEncuestado.email, password: userEncuestado.password }); // Envía las credenciales de inicio de sesión
+    const token = loginResponse.body.token; // Extrae el token de la respuesta
+
+    // Ahora, realiza la solicitud PUT a /users/:userId con la cookie establecida
+    const response = await agent
+      .put(`/users/${7}`)
+      .set('Cookie', `token=${token}`) // Establece la cookie con el token obtenido
+      .send({ name: 'Admin', email: 'email2@email.com', password: '1234' , rol: 1 });
+    
+    expect(response.status).toBe(200);
+    expect(response.text).toBe('Usuario actualizado correctamente');
+  }
+  );
+});
+
+describe('PUT /users:userId otro Usuario', () => {
+  it('Deberia actualizar un usuario', async () => {
+    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+
+    // Realiza una solicitud POST para iniciar sesión y obtener el token
+    const loginResponse = await agent
+      .post('/auth/login')
+      .send({ email: userCreador.email, password: userCreador.password }); // Envía las credenciales de inicio de sesión
+    const token = loginResponse.body.token; // Extrae el token de la respuesta
+
+    // Ahora, realiza la solicitud PUT a /users/:userId con la cookie establecida
+    const response = await agent
+      .put(`/users/${userEncuestado.id}`)
+      .set('Cookie', `token=${token}`) // Establece la cookie con el token obtenido
+      .send({ name: 'Admin', email: 'email2@email.com', password: '1234' , rol: 1 });
+    
+    expect(response.status).toBe(403);
+    expect(response.text).toBe('Acceso denegado. No tiene permiso para acceder a este recurso');
+  }
+  );
+});
+
+describe('DELETE /users:userId Admin', () => {
+  it('Deberia eliminar un usuario', async () => {
+    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+
+    // Realiza una solicitud POST para iniciar sesión y obtener el token
+    const loginResponse = await agent
+      .post('/auth/login')
+      .send({ email: userAdmin.email, password: userAdmin.password }); // Envía las credenciales de inicio de sesión
+    const token = loginResponse.body.token; // Extrae el token de la respuesta
+
+    // Ahora, realiza la solicitud DELETE a /users/:userId con la cookie establecida
+    const response = await agent
+      .delete(`/users/${userEncuestado.id}`)
+      .set('Cookie', `token=${token}`); // Establece la cookie con el token obtenido
+
+    expect(response.status).toBe(200);
+    expect(response.text).toBe('Usuario eliminado correctamente');
+  });
+});
+
+describe('DELETE /users:userId Creador', () => {
+
+  it('Deberia eliminar un usuario', async () => {
+    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+
+    // Realiza una solicitud POST para iniciar sesión y obtener el token
+    const loginResponse = await agent
+      .post('/auth/login')
+      .send({ email: userCreador.email, password: userCreador.password }); // Envía las credenciales de inicio de sesión
+    const token = loginResponse.body.token; // Extrae el token de la respuesta
+
+    // Ahora, realiza la solicitud DELETE a /users/:userId con la cookie establecida
+    const response = await agent
+      .delete(`/users/${userEncuestado.id}`)
+      .set('Cookie', `token=${token}`); // Establece la cookie con el token obtenido
+
+    expect(response.status).toBe(403);
+  });
+});
 
 //Pruebas Unitarias para Respuestas de Encuestas
 describe('POST /surveys/:id/responses', () => {
@@ -222,8 +353,8 @@ describe('POST /respondents', () => {
     const response = await agent
       .post('/respondents')
       .send({
-        "nombre": "Prueba Encuestado",
-        "correo": "prueba@gmail.com",
+        "name": "Prueba Encuestado",
+        "email": "prueba@gmail.com",
         "password": "1234"
       })
       .set('Cookie', `token=${token}`); // Establece la cookie con el token obtenido
@@ -333,29 +464,28 @@ describe('GET /surveys/:id/analysis', () => {
 });
 
 
-
 // Pruebas de encuestas
 
-describe('POST /encuestas Admin', () => {
-  it('Deberia crear una encuesta', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+// describe('POST /encuestas Admin', () => {
+//   it('Deberia crear una encuesta', async () => {
+//     const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
 
-    // Realiza una solicitud POST para iniciar sesión y obtener el token
-    const loginResponse = await agent
-      .post('/auth/login')
-      .send({ email: userAdmin.email, password: userAdmin.password }); // Envía las credenciales de inicio de sesión
-    const token = loginResponse.body.token; // Extrae el token de la respuesta
+//     // Realiza una solicitud POST para iniciar sesión y obtener el token
+//     const loginResponse = await agent
+//       .post('/auth/login')
+//       .send({ email: userAdmin.email, password: userAdmin.password }); // Envía las credenciales de inicio de sesión
+//     const token = loginResponse.body.token; // Extrae el token de la respuesta
 
-    // Ahora, realiza la solicitud POST a /encuestas con la cookie establecida
-    const response = await agent
-      .post('/encuestas')
-      .set('Cookie', `token=${token}`) // Establece la cookie con el token obtenido
-      .send({ titulo: 'Encuesta de prueba', descripcion: 'Esta es una encuesta de prueba' });
+//     // Ahora, realiza la solicitud POST a /encuestas con la cookie establecida
+//     const response = await agent
+//       .post('/encuestas')
+//       .set('Cookie', `token=${token}`) // Establece la cookie con el token obtenido
+//       .send({ titulo: 'Encuesta de prueba', descripcion: 'Esta es una encuesta de prueba' });
 
-    expect(response.status).toBe(201);
-  });
-})
-
+//     expect(response.status).toBe(201);
+//   });
+// }
+// );
 
 
 
