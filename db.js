@@ -94,6 +94,7 @@ async createUser(username, email, password, rol) {
             await this.client.query('INSERT INTO users (name, email, password, rol) VALUES ($1, $2, $3, 3)', [username, email, password]);
         } catch (e) {
             console.error(`Failed to create respondent ${e}`);
+            return 'Error al crear encuestado';
         }
     }
 
@@ -103,6 +104,7 @@ async createUser(username, email, password, rol) {
             return result.rows;
         } catch (e) {
             console.error(`Failed to get encuestados ${e}`);
+            return 'Error al obtener encuestados';
         }
     }
 
@@ -112,22 +114,27 @@ async createUser(username, email, password, rol) {
             return result.rows[0];
         } catch (e) {
             console.error(`Failed to get respondent by id ${e}`);
+            return 'Error al obtener encuestado';
         }
     }
 
     async updateRespondent(request_json, id) {
         try {
             await this.client.query('UPDATE users SET name = $1, email = $2 WHERE id = $3 AND rol = 3', [request_json.name, request_json.email, id]);
+            return 'Encuestado actualizado exitosamente';
         } catch (e) {
             console.error(`Failed to update respondent ${e}`);
+            return 'Error al actualizar encuestado';
         }
     }
 
     async deleteRespondent(id) {
         try {
             await this.client.query('DELETE FROM users WHERE id = $1 AND rol = 3', [id]);
+            return 'Encuestado eliminado exitosamente';
         } catch (e) {
             console.error(`Failed to delete respondent ${e}`);
+            return 'Error al eliminar encuestado';
         }
     }
 }

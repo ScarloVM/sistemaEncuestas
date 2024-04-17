@@ -94,10 +94,11 @@ class Database2 {
         try {
             const collection = this.db.collection('encuestas');
             const result = await collection.updateOne({ 'idEncuesta': parseInt(survey_id) }, { $push: { 'respuestas': response } });
-            console.log('Response inserted successfully:', result.modifiedCount);
-            return result.modifiedCount;
+            return 'Response inserted successfully:', result.modifiedCount;
+            //return result.modifiedCount;
         } catch (e) {
             console.error(`Failed to insert response: ${e}`);
+            return 'No se pudo insertar la respuesta'
         }
     }
 
@@ -126,7 +127,7 @@ class Database2 {
 
             if (!encuesta) {
                 console.log('No se encontró la encuesta con el ID especificado.');
-                return null;
+                return 'No se encontró la encuesta con el ID especificado.';
             }
 
             // Inicializar el objeto de informe
@@ -179,7 +180,7 @@ class Database2 {
             return informe;
         } catch (error) {
             console.error('Error al generar informe de encuesta:', error);
-            return null;
+            return 'Error al generar informe de encuesta:', error;
         }
     }
 }

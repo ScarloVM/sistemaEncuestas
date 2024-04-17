@@ -208,9 +208,6 @@ app.put('/surveys/:id/questions/:questionId', authenticateAdminOrSurveyCreator, 
     }
 });
 
-
-
-
 app.delete('/surveys/:id/questions/:questionId', authenticateAdminOrSurveyCreator, async (req, res) => {
     const surveyId = req.params.id;
     const questionId = req.params.questionId;
@@ -236,7 +233,7 @@ app.post('/surveys/:id/responses', async (req, res) => {
     try {
         const response = await appService.insertResponse(req.body, req.params.id);
         console.log(response);
-        res.status(200).send({ modifiedCount: response }); // Envía un código de estado 200 y el valor de modifiedCount como cuerpo de respuesta
+        res.status(200).send('Se ha insertado la respuesta correctamente'); // Envía un código de estado 200 y el valor de modifiedCount como cuerpo de respuesta
     } catch (error) {
         console.error(error);
         res.status(500).send('Error al insertar la respuesta');
@@ -247,29 +244,6 @@ app.get('/surveys/:id/responses', authenticateAdminCreator, async (req, res) => 
     const responses = await appService.getResponses(req.params.id);
     res.send(responses);
 });
-
-
-
-app.put('/surveys/:id/questions/:questionId', async (req, res) => {
-    const surveyId = req.params.id;
-    const questionId = req.params.questionId;
-    const updatedQuestion = req.body; // Nueva información de la pregunta
-    
-    try {
-        // Actualiza la pregunta en la encuesta especificada
-        const result = await appService.updateSurveyQuestion(surveyId, questionId, updatedQuestion);
-        
-        if (result) {
-            res.status(200).send("Pregunta de encuesta actualizada correctamente.");
-        } else {
-            res.status(404).send("Encuesta o pregunta no encontrada.");
-        }
-    } catch (error) {
-        console.error(`Error al actualizar la pregunta de la encuesta: ${error}`);
-        res.status(500).send("Error al actualizar la pregunta de la encuesta.");
-    }
-});
-
 
 // Encuestados
 app.post('/respondents', async (req, res) => {
