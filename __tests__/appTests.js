@@ -123,7 +123,27 @@ describe('GET /users Creador', () => {
 
 
 
+// Pruebas de encuestas
 
+describe('POST /encuestas Admin', () => {
+  it('Deberia crear una encuesta', async () => {
+    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+
+    // Realiza una solicitud POST para iniciar sesión y obtener el token
+    const loginResponse = await agent
+      .post('/auth/login')
+      .send({ email: userAdmin.email, password: userAdmin.password }); // Envía las credenciales de inicio de sesión
+    const token = loginResponse.body.token; // Extrae el token de la respuesta
+
+    // Ahora, realiza la solicitud POST a /encuestas con la cookie establecida
+    const response = await agent
+      .post('/encuestas')
+      .set('Cookie', `token=${token}`) // Establece la cookie con el token obtenido
+      .send({ titulo: 'Encuesta de prueba', descripcion: 'Esta es una encuesta de prueba' });
+
+    expect(response.status).toBe(201);
+  });
+}
 
 
 
