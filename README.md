@@ -133,7 +133,7 @@ Es necesario un body como el siguiente:
 {
   "titulo": "Encuesta de experiencia de compra",
   "descripcion": "Esta encuesta tiene como objetivo recopilar información sobre la experiencia de compra en nuestra tienda.",
-  "creador": "admin456",
+  "emailCreador": "admin456",
   "estado": "active"
 }
 ```
@@ -230,7 +230,10 @@ Para modificar una pregunta una pregunta específica de una encuesta específica
 Esta acción necesita un body como el siguiente:
 
 ``` js
-
+{
+        "tipo": "numerica",
+        "texto": "¿Cuantos años tienes?"
+}
 
 ```
 
