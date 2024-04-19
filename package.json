@@ -14,6 +14,6 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "jest "
+    "test": "jest --testPathPattern=testIntegracion.js"
   }
 }

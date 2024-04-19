@@ -347,12 +347,14 @@ class AppService {
             // Obtener la encuesta por su ID
             const existingSurvey = await this.database2.findSurveyById(surveyId);
             if (!existingSurvey) {
+                console.log('Encuesta no encontrada');
                 return false; // Encuesta no encontrada
             }
             
             // Buscar la pregunta por su ID dentro de la encuesta
             const questionIndex = existingSurvey.questions.findIndex(q => q.idPregunta === parseInt(questionId));
             if (questionIndex === -1) {
+                console.log('Pregunta no encontrada en la encuesta');
                 return false; // Pregunta no encontrada en la encuesta
             }
             
