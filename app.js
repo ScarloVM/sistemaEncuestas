@@ -90,8 +90,13 @@ app.get('/users',  authenticateAdmin, async (req, res) => { // r
 });
 
 app.get('/users/:id', async (req, res) => { // r
-    const task = await appService.getUserById(req.params.id);
-    res.send(task);
+    try{
+        const task = await appService.getUserById(req.params.id);
+        res.send(task);
+    }
+    catch(e){
+        console.log(e);
+    }
 });
 
 app.put('/users/:id', authenticateOwnRole, async (req, res) => {
