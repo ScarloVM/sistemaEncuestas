@@ -40,16 +40,14 @@ const encuestaPrueba = {
     {
       idPregunta: 1,
       tipo: "abierta",
-      texto: "¿cual es tu color favorito?",
-      required: true
+      texto: "¿cual es tu color favorito?"
     },
 
     {
       idPregunta: 2,
       tipo: "eleccion_simple",
       texto: "¿que tanto te gusta el helado?",
-      options: ["5", "4", "3", "2", "1"],
-      required: true
+      options: ["5", "4", "3", "2", "1"]
     },
 
   ]
@@ -64,16 +62,14 @@ const encuestaPrueba2 = {
     {
       idPregunta: 1,
       tipo: "abierta",
-      texto: "¿cual es tu color favorito?",
-      required: true
+      texto: "¿cual es tu color favorito?"
     },
 
     {
       idPregunta: 2,
       tipo: "eleccion_simple",
       texto: "¿que tanto te gusta el helado?",
-      options: ["5", "4", "3", "2", "1"],
-      required: true
+      options: ["5", "4", "3", "2", "1"]
     },
 
   ]
@@ -88,16 +84,14 @@ const encuestaPrueba3 = {
     {
       idPregunta: 1,
       tipo: "abierta",
-      texto: "¿cual es tu color favorito?",
-      required: true
+      texto: "¿cual es tu color favorito?"
     },
 
     {
       idPregunta: 2,
       tipo: "eleccion_simple",
       texto: "¿que tanto te gusta el helado?",
-      options: ["5", "4", "3", "2", "1"],
-      required: true
+      options: ["5", "4", "3", "2", "1"]
     },
 
   ]
@@ -348,43 +342,37 @@ describe('POST /surveys/:id/responses', () => {
             "idPregunta": 1,
             "tipo": "abierta",
             "texto": "¿Cuál es tu opinión sobre nuestro servicio?",
-            "respuesta": "Decente",
-            "required": true
+            "respuesta": "Decente"
           },
           {
             "idPregunta": 2,
             "tipo": "eleccion_simple",
             "texto": "¿Estás satisfecho con el producto?",
-            "option_seleccionada": "Muy malo",
-            "required": true
+            "option_seleccionada": "Muy malo"
           },
           {
             "idPregunta": 3,
             "tipo": "eleccion_multiple",
             "texto": "¿Qué productos te gustaría ver en el futuro?",
-            "option_seleccionada": ["Producto A", "Producto D"],
-            "required": false
+            "option_seleccionada": ["Producto A", "Producto D"]
           },
           {
             "idPregunta": 4,
             "tipo": "escala_calificacion",
             "texto": "¿Qué tan satisfecho estás con nuestro servicio?",
-            "option_seleccionada": "3",
-            "required": false
+            "option_seleccionada": "3"
           },
           {
             "idPregunta": 5,
             "tipo": "Si/No",
             "texto": "¿Recomendarías nuestro servicio a un amigo?",
-            "option_seleccionada": "Si",
-            "required": true
+            "option_seleccionada": "Si"
           },
           {
             "idPregunta": 6,
             "tipo": "numerica",
             "texto": "¿Cuántos años tienes?",
-            "respuesta": "35",
-            "required": false
+            "respuesta": "35"
           }]})
       .set('Cookie', `token=${token}`); // Establece la cookie con el token obtenido
 
@@ -650,15 +638,13 @@ describe('PUT /surveys/:id Admin', () => {
         {
           idPregunta: 1,
           tipo: 'abierta',
-          texto: '¿Cuál es tu color favorito xd?',
-          required: true,
+          texto: '¿Cuál es tu color favorito xd?'
         },
         {
           idPregunta: 2,
           tipo: 'eleccion_simple',
           texto: '¿Qué tanto te gusta el helado?',
-          options: ['5', '4', '3', '2', '1'],
-          required: true,
+          options: ['5', '4', '3', '2', '1']
         },
       ],
     };
@@ -706,15 +692,13 @@ describe('PUT /surveys/:id Creador', () => {
         {
           idPregunta: 1,
           tipo: 'abierta',
-          texto: '¿Cuál es tu color favorito?',
-          required: true,
+          texto: '¿Cuál es tu color favorito?'
         },
         {
           idPregunta: 2,
           tipo: 'eleccion_simple',
           texto: '¿Qué tanto te gusta el helado?',
-          options: ['5', '4', '3', '2', '1'],
-          required: true,
+          options: ['5', '4', '3', '2', '1']
         },
       ],
     };

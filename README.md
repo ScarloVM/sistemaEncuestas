@@ -90,28 +90,25 @@ Esta acción necesita un body como el siguiente:
   "idEncuesta": 2,
   "titulo": "Encuesta de experiencia de compra",
   "descripcion": "Esta encuesta tiene como objetivo recopilar información sobre la experiencia de compra en nuestra tienda.",
-  "creador": "admin456",
+  "emailCreador": "admin456",
   "estado": "active",
   "questions": [
     {
       "idPregunta": 1,
       "tipo": "abierta",
-      "texto": "¿Cómo calificarías la amabilidad del personal de nuestra tienda?",
-      "required": true
+      "texto": "¿Cómo calificarías la amabilidad del personal de nuestra tienda?"
     },
     {
       "idPregunta": 2,
       "tipo": "eleccion_simple",
       "texto": "¿Recomendarías nuestra tienda a tus amigos?",
-      "options": ["Sí", "No"],
-      "required": true
+      "options": ["Sí", "No"]
     },
     {
       "idPregunta": 3,
       "tipo": "eleccion_multiple",
       "texto": "¿Qué sección de nuestra tienda te gusta más?",
-      "options": ["Ropa", "Electrónica", "Juguetes", "Hogar"],
-      "required": false
+      "options": ["Ropa", "Electrónica", "Juguetes", "Hogar"]
     }
   ],
   "respuestas": []
@@ -145,7 +142,7 @@ O puede actualizar un campo en especifico solamente:
 
 ``` js
 {
-  "titulo": "Encuesta de experiencia de compra",
+  "titulo": "Encuesta de experiencia de compra"
 }
 ```
 
@@ -163,10 +160,65 @@ Para poder publicar una encuesta y hacerla accesible se envía la solicitud con 
 
 Para añadir una pregunta a una encuesta específica se envía la solicitud con el metodo **POST** y el endpoint **/surveys/{id}/questions**. Donde id es el id de la encuesta donde se quiere añadir la pregunta. Esta acción solo puede ser realizada por los administradores y creadores de encuesta.
 Esta acción necesita un body como el siguiente:
+
+Para preguntas del tipo **abiertas** es de la siguiente forma:
 ``` js
-
-
+{
+  "idPregunta": 1,
+  "tipo": "abierta",
+  "texto": "¿Cuál es tu opinión sobre nuestro servicio?"
+}
 ```
+
+Para preguntas del tipo **eleccion_simple** es de la siguiente forma:
+``` js
+{
+  "idPregunta": 2,
+  "tipo": "eleccion_simple",
+  "texto": "¿Estás satisfecho con el producto?",
+  "options": ["Excelente", "Regular", "Malo", "Muy malo"]
+}
+```
+
+Para preguntas del tipo **eleccion_multiple** es de la siguiente forma:
+``` js
+{
+  "idPregunta": 3,
+  "tipo": "eleccion_multiple",
+  "texto": "¿Qué productos te gustaría ver en el futuro?",
+  "options": ["Producto A", "Producto B", "Producto C", "Producto D"]
+}
+```
+
+Para preguntas del tipo **escala_calificacion** es de la siguiente forma:
+``` js
+{
+  "idPregunta": 4,
+  "tipo": "escala_calificacion",
+  "texto": "¿Qué tan satisfecho estás con nuestro servicio?",
+  "options": ["5", "4", "3", "2", "1"]
+}
+```
+
+Para preguntas del tipo **Si/No** es de la siguiente forma:
+``` js
+{
+  "idPregunta": 5,
+  "tipo": "Si/No",
+  "texto": "¿Recomendarías nuestro servicio a un amigo?",
+  "options": ["Si", "No"]
+}
+```
+Para preguntas del tipo **numerica** es de la siguiente forma:
+``` js
+{
+  "idPregunta": 6,
+  "tipo": "numerica",
+  "texto": "¿Cuántos años tienes?"
+}
+```
+
+Nota: Existen 6 tipos de preguntas las cuales son **abiertas**, **eleccion_simple**, **eleccion_multiple**, **escala_calificacion**, **Si/No** y **numericas**
 
 ### GET /surveys/{id}/questions
 
@@ -200,27 +252,22 @@ Para enviar respuestas a una encuesta se envía la solicitud con el metodo **POS
             "idPregunta": 1,
             "tipo": "abierta",
             "texto": "¿Cuál es tu opinión sobre nuestro servicio?",
-            "respuesta": "Decente",
-            "required": true
+            "respuesta": "Decente"
           },
           {
             "idPregunta": 2,
             "tipo": "eleccion_simple",
             "texto": "¿Estás satisfecho con el producto?",
-            "option_seleccionada": "Muy malo",
-            "required": true
+            "option_seleccionada": "Muy malo"
           },
           {
             "idPregunta": 3,
             "tipo": "eleccion_multiple",
             "texto": "¿Qué productos te gustaría ver en el futuro?",
-            "option_seleccionada": ["Producto A", "Producto D"],
-            "required": false
+            "option_seleccionada": ["Producto A", "Producto D"]
           }]}
 
 ```
-Nota: Existen 6 tipos de preguntas las cuales son **abiertas**, **eleccion_simple**, **eleccion_multiple**, **escala_calificacion**, **Si/No** y **numericas**
-
 ### GET /surveys/{id}/responses
 
 Para obtener las respuestas de una encuesta en específico se envía la solicitud con el metodo **GET** y el endpoint **/surveys/{id}/responses**. Donde el id es el id de la encuesta a la que se quiere añadir las respuestas. Esta acción solo puede ser realizada por los administradores y creadores de encuesta.
