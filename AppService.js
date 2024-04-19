@@ -69,6 +69,9 @@ class AppService {
             else {
                 console.log('No se encontró el usuario en la caché de Redis');
                 const user = await this.database.getUserById(id);
+                if (!user) {
+                    throw new Error('User not found');
+                }
                 await this.redisClient.set(`user:${id}`, JSON.stringify(user));
                 await this.redisClient.expire(`user:${id}`, tiempoExpi); // Expira en 60 segundos
                 return user;
@@ -200,6 +203,9 @@ class AppService {
             else{
                 console.log('Survey not found in Redis cache');
                 const survey = await this.database2.findSurveyById(id);
+                if (!survey) {
+                    throw new Error('Survey not found');
+                }
                 await this.redisClient.set(`survey:${id}`, JSON.stringify(survey));
                 await this.redisClient.expire(`survey:${id}`, tiempoExpi); // Expires in 60 seconds
                 return survey
@@ -333,6 +339,9 @@ class AppService {
             }
 
             const survey = await this.database2.findSurveyById(surveyId);
+            if (!survey) {
+                throw new Error('Pregunta no encontrada');
+            }
             await this.redisClient.set(`survey:${surveyId}`, JSON.stringify(survey));
             await this.redisClient.expire(`survey:${surveyId}`, tiempoExpi); // Expires in 60 seconds
             return existingSurvey.questions;
@@ -474,6 +483,9 @@ class AppService {
             else{
                 console.log('Responses not found in Redis cache');
                 const responses = await this.database2.getResponses(survey_id);
+                if (!responses) {
+                    throw new Error('Responses not found');
+                }
                 await this.redisClient.set(`responses:${survey_id}`, JSON.stringify(responses));
                 await this.redisClient.expire(`responses:${survey_id}`, tiempoExpi); // Expires in 60 seconds
                 return responses;
@@ -541,8 +553,7 @@ class AppService {
                     await this.redisClient.expire(`respondent:${id}`, tiempoExpi); // Expires in 60 seconds
                     return respondent;
                 } else {
-                    console.log('Respondent not found in database');
-                    return null; // or handle the case where respondent is not found
+                    throw new Error('Respondent not found');
                 }
             }
         }
@@ -622,6 +633,9 @@ class AppService {
             else{
                 console.log('Analysis not found in Redis cache');
                 const analysis = await this.database2.getAnalysis(survey_id);
+                if (!analysis) {
+                    throw new Error('Analysis not found');
+                }
                 await this.redisClient.set(`analysis:${survey_id}`, JSON.stringify(analysis));
                 await this.redisClient.expire(`analysis:${survey_id}`, tiempoExpi); // Expires in 60 seconds
                 return analysis;
