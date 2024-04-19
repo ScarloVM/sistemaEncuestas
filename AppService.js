@@ -314,7 +314,7 @@ class AppService {
             return result > 0; 
         } catch (error) {
             console.error(`Failed to add question to survey: ${error}`);
-            return false;
+            throw error;
         }
     }
 
@@ -331,10 +331,14 @@ class AppService {
             if (!existingSurvey) {
                 return null; 
             }
+
+            const survey = await this.database2.findSurveyById(surveyId);
+            await this.redisClient.set(`survey:${surveyId}`, JSON.stringify(survey));
+            await this.redisClient.expire(`survey:${surveyId}`, tiempoExpi); // Expires in 60 seconds
             return existingSurvey.questions;
         } catch (error) {
             console.error(`Failed to get survey questions: ${error}`);
-            return null;
+            throw error;
         }
     }
     
