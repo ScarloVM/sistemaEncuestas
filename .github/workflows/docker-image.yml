@@ -32,23 +32,8 @@ jobs:
       run: |
         docker push javialroro/snupieencuestas:latest
 
-    # - name: Start Docker Compose
-    #   run: |
-    #     docker-compose up -d
-    #     sleep 80 # Espera 30 segundos para que los servicios se inicien
-    # - name: Run Tests
-    #   run:  |
-    #     docker-compose exec app npm test
-    #     TEST_EXIT_CODE=$?
-    #     echo "Test exit code: $TEST_EXIT_CODE"
+    - name: Run Unit Tests
+      run: |
+        npx jest --testPathPattern=testUnitarios.js
 
-    # - name: Stop Docker Compose
-    #   run: |
-    #     docker-compose down
-        
-    # - name: Check Test Result
-    #   run: |
-    #     if [ $TEST_EXIT_CODE -ne 0 ]; then
-    #       echo "Tests failed, cancelling merge."
-    #       exit 1
-    #     fi
+
