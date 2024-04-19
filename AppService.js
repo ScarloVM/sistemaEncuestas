@@ -156,10 +156,14 @@ class AppService {
         }
         catch(e){
             console.error(`Failed to create survey ${e}`);
+            throw e;
         }
     }
 
-    
+
+  
+
+
 
     async getSurveys(collectionName) {
         try{
@@ -181,6 +185,7 @@ class AppService {
         }
         catch(e){
             console.error(`Failed to get surveys ${e}`);
+            throw e;
         }
     }
 
@@ -202,6 +207,7 @@ class AppService {
         }
         catch(e){
             console.error(`Failed to get survey by id ${e}`);
+            throw e;
         }
     }
 
@@ -230,6 +236,7 @@ class AppService {
         }
         catch(e){
             console.error(`Failed to update survey ${e}`);
+            throw e;
         }
     }
 
@@ -258,6 +265,7 @@ class AppService {
         }
         catch(e){
             console.error(`Failed to delete survey ${e}`);
+            throw e;
         }
     }
 

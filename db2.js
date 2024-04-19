@@ -82,6 +82,7 @@ class Database2 {
             return result.deletedCount;
         } catch (e) {
             console.error(`Failed to delete document by ID: ${e}`);
+            throw e;
         }
     }
 
