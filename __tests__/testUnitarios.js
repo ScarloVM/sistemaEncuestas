@@ -560,8 +560,7 @@ describe('insertResponse', () => {
         "idPregunta": 1,
         "tipo": "abierta",
         "texto": "¿Cuál es tu opinión sobre nuestro servicio?",
-        "respuesta": "Decente",
-        "required": true
+        "respuesta": "Decente"
       }]};
         mockDatabase2.insertResponse.mockResolvedValue(response);
 
@@ -582,8 +581,7 @@ describe('insertResponse', () => {
                 "idPregunta": 1,
                 "tipo": "abierta",
                 "texto": "¿Cuál es tu opinión sobre nuestro servicio?",
-                "respuesta": "Decente",
-                "required": true
+                "respuesta": "Decente"
               }]};
         const errorMessage = 'Database error';
         mockDatabase2.insertResponse.mockRejectedValue(new Error(errorMessage));
@@ -604,8 +602,7 @@ describe('getResponses', () => {
                         "idPregunta": 1,
                         "tipo": "abierta",
                         "texto": "¿Cuál es tu opinión sobre nuestro servicio?",
-                        "respuesta": "Muy malo",
-                        "required": true
+                        "respuesta": "Muy malo"
                     }
                 ]
             },
@@ -616,8 +613,7 @@ describe('getResponses', () => {
                         "idPregunta": 1,
                         "tipo": "abierta",
                         "texto": "¿Cuál es tu opinión sobre nuestro servicio?",
-                        "respuesta": "Regular",
-                        "required": true
+                        "respuesta": "Regular"
                     }
                 ]
             }];
@@ -641,8 +637,7 @@ describe('getResponses', () => {
                          "idPregunta": 1,
                          "tipo": "abierta",
                          "texto": "¿Cuál es tu opinión sobre nuestro servicio?",
-                         "respuesta": "Muy malo",
-                         "required": true
+                         "respuesta": "Muy malo"
                      }
                  ]
              },
@@ -653,8 +648,7 @@ describe('getResponses', () => {
                          "idPregunta": 1,
                          "tipo": "abierta",
                          "texto": "¿Cuál es tu opinión sobre nuestro servicio?",
-                         "respuesta": "Regular",
-                         "required": true
+                         "respuesta": "Regular"
                      }
                  ]
              }];
