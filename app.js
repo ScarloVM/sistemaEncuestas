@@ -50,7 +50,7 @@ app.post('/auth/register', async (req, res) => {
         res.status(201).send('Usuario registrado correctamente');
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error al registrar al usuario');
+        res.status(500).send('Error al registrar al usuario'+error);
     }
 });
 
@@ -72,7 +72,7 @@ app.post('/auth/login', async (req, res) => {
         res.send({ token });
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error al iniciar sesión');
+        res.status(500).send('Error al iniciar sesión'+error);
     }
 });
 
@@ -112,7 +112,7 @@ app.post('/surveys', authenticateAdminCreator, async (req, res) => {
         res.status(201).send(survey);
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error al crear la encuesta');
+        res.status(500).send('Error al crear la encuesta'+error);
     }
 });
 
@@ -147,7 +147,7 @@ app.post('/surveys/:id/publish', authenticateAdminOrSurveyCreator, async (req, r
         }
     } catch (error) {
         console.error(`Failed to publish survey: ${error}`);
-        res.status(500).send("Failed to publish survey.");
+        res.status(500).send("Failed to publish survey." + error);
     }
 });
 
@@ -167,7 +167,7 @@ app.post('/surveys/:id/questions', authenticateAdminOrSurveyCreator , async (req
         }
     } catch (error) {
         console.error(`Failed to add question to survey: ${error}`);
-        res.status(500).send("Failed to add question to survey.");
+        res.status(500).send("Failed to add question to survey." + error);
     }
 });
 
@@ -183,7 +183,7 @@ app.get('/surveys/:id/questions', async (req, res) => {
         }
     } catch (error) {
         console.error(`Failed to get survey questions: ${error}`);
-        res.status(500).send("Failed to get survey questions.");
+        res.status(500).send("Failed to get survey questions."+error);
     }
 });
 
@@ -204,7 +204,7 @@ app.put('/surveys/:id/questions/:questionId', authenticateAdminOrSurveyCreator, 
         }
     } catch (error) {
         console.error(`Error al actualizar la pregunta de la encuesta: ${error}`);
-        res.status(500).send("Error al actualizar la pregunta de la encuesta.");
+        res.status(500).send("Error al actualizar la pregunta de la encuesta." + error);
     }
 });
 
@@ -223,7 +223,7 @@ app.delete('/surveys/:id/questions/:questionId', authenticateAdminOrSurveyCreato
         }
     } catch (error) {
         console.error(`Error al eliminar la pregunta de la encuesta: ${error}`);
-        res.status(500).send("Error al eliminar la pregunta de la encuesta.");
+        res.status(500).send("Error al eliminar la pregunta de la encuesta." + error);
     }
 });
 
@@ -236,7 +236,7 @@ app.post('/surveys/:id/responses', async (req, res) => {
         res.status(200).send('Se ha insertado la respuesta correctamente'); // Envía un código de estado 200 y el valor de modifiedCount como cuerpo de respuesta
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error al insertar la respuesta');
+        res.status(500).send('Error al insertar la respuesta'+error);
     }
 });
 
@@ -260,7 +260,7 @@ app.post('/respondents', async (req, res) => {
     }
     catch (error) {
         console.error(error);
-        res.status(500).send('Error al crear el encuestado');
+        res.status(500).send('Error al crear el encuestado' + error);
     }
 });
 
@@ -394,7 +394,7 @@ async function authenticateAdminOrSurveyCreator(req, res, next) {
                 }
             } catch (error) {
                 console.error(`Error al verificar el creador de la encuesta: ${error}`);
-                return res.status(500).send('Error interno del servidor');
+                return res.status(500).send('Error interno del servidor'+error);
             }
         }
     });
