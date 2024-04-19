@@ -1,0 +1,856 @@
+{
+	"info": {
+		"_postman_id": "f834eb84-e2b7-446b-af87-1b571e6ff3e4",
+		"name": "Sistema de Encuestas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33176195",
+		"_collection_link": "https://red-equinox-252088.postman.co/workspace/Snupie-Team~4acce18a-38d6-4b19-9324-400f52e315bc/collection/33176195-f834eb84-e2b7-446b-af87-1b571e6ff3e4?action=share&source=collection_link&creator=33176195"
+	},
+	"item": [
+		{
+			"name": "Autenticación y Autorización",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Kennors\",\r\n    \"password\": \"1234\",\r\n    \"email\":\"kennors@email.com\",\r\n    \"role\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/auth/register",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"kennors@email.com\",\r\n    \"password\": \"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/auth/login",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"login"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LogOut",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlBydWViYSIsInJvbGUiOjEsImlkIjo1LCJpYXQiOjE3MTMwNTI2OTd9.PeuUAwc4SNnMQQ4fu4sp7kzOdivXsDb4Al4P93FUa-8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/auth/logout",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Usuarios",
+			"item": [
+				{
+					"name": "GetUsers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+									"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+									"    .tftable tr {background-color:#ffffff;}\r",
+									"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+									"    .tftable tr:hover {background-color:#e0ffff;}\r",
+									"</style>\r",
+									"\r",
+									"<table class=\"tftable\" border=\"1\">\r",
+									"    <tr>\r",
+									"        <th>ID</th>\r",
+									"        <th>Name</th>\r",
+									"        <th>Email</th>\r",
+									"        <th>Password</th>\r",
+									"        <th>Role</th>\r",
+									"    </tr>\r",
+									"    \r",
+									"    {{#each response}}\r",
+									"        <tr>\r",
+									"            <td>{{id}}</td>\r",
+									"            <td>{{name}}</td>\r",
+									"            <td>{{email}}</td>\r",
+									"            <td>{{password}}</td>\r",
+									"            <td>{{rol}}</td>\r",
+									"        </tr>\r",
+									"    {{/each}}\r",
+									"</table>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return {response: pm.response.json()}\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/users",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetUsersID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IktvbmRlIiwicm9sZSI6MiwiaWQiOjM4LCJpYXQiOjE3MTMwNTEzNTV9.di6COjL5C-HfHUBqPvBOHTHHY4lGjl9w5XMLOuBH2s0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/users/:id",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PutUsersID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlBydWViYSIsInJvbGUiOjEsImlkIjo1LCJpYXQiOjE3MTMwNTIyMDh9.hc1HGErDk0zg2D02W9l6qf03iP_TpITtiOJ35Xm1cL4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"KennorsUpdated\",\r\n    \"password\": \"1234\",\r\n    \"email\":\"prueba@gmail.com\",\r\n    \"rol\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/users/:id",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteUserID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlBydWViYSIsInJvbGUiOjEsImlkIjo1LCJpYXQiOjE3MTMwNTIyMDh9.hc1HGErDk0zg2D02W9l6qf03iP_TpITtiOJ35Xm1cL4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/users/:id",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Encuestas",
+			"item": [
+				{
+					"name": "PostSurveys",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"idEncuesta\": 7,\r\n        \"titulo\": \"Prueba Encuesta\",\r\n        \"descripcion\": \"Esta encuesta tiene como objetivo recopilar información sobre la experiencia de compra en nuestra tienda.\",\r\n        \"estado\": \"private\",\r\n        \"questions\": [\r\n            {\r\n                \"idPregunta\": 1,\r\n                \"tipo\": \"abierta\",\r\n                \"texto\": \"¿Cómo calificarías la amabilidad del personal de nuestra tienda?\",\r\n                \"required\": true\r\n            },\r\n            {\r\n                \"idPregunta\": 2,\r\n                \"tipo\": \"eleccion_simple\",\r\n                \"texto\": \"¿Recomendarías nuestra tienda a tus amigos?\",\r\n                \"options\": [\r\n                    \"Si\",\r\n                    \"No\"\r\n                ],\r\n                \"required\": true\r\n            },\r\n            {\r\n                \"idPregunta\": 3,\r\n                \"tipo\": \"eleccion_multiple\",\r\n                \"texto\": \"¿Qué sección de nuestra tienda te gusta más?\",\r\n                \"options\": [\r\n                    \"Ropa\",\r\n                    \"Electrónica\",\r\n                    \"Juguetes\",\r\n                    \"Hogar\"\r\n                ],\r\n                \"required\": false\r\n            }\r\n        ],\r\n        \"respuestas\": []\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/surveys",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"surveys"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetSurveys",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/surveys",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"surveys"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetSurveysID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/surveys/:id",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"surveys",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PutSurveysID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"titulo\": \"Encuesta prueba\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/surveys/:id",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"surveys",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteSurveysID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/surveys/:id",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"surveys",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PublishSurveysID",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/surveys/:id/publish",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"surveys",
+								":id",
+								"publish"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Preguntas de Encuestas",
+			"item": [
+				{
+					"name": "PostQuestions",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"idPregunta\": 78,\r\n        \"tipo\": \"eleccion_simple\",\r\n        \"texto\": \"¿Estás satisfecho con el producto?\",\r\n        \"options\": [\"Excelente\", \"Regular\", \"Malo\", \"Muy malo\"],\r\n        \"required\": true\r\n      }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/surveys/:id/questions",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"surveys",
+								":id",
+								"questions"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetQuestions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/surveys/:id/questions",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"surveys",
+								":id",
+								"questions"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PutQuestions",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"tipo\": \"numerica\",\r\n        \"texto\": \"¿Cuantos años tienes?\",\r\n        \"options\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/surveys/:id/questions/:questionId",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"surveys",
+								":id",
+								"questions",
+								":questionId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "7"
+								},
+								{
+									"key": "questionId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteQuestions",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/surveys/:id/questions/:questionId",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"surveys",
+								":id",
+								"questions",
+								":questionId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "7"
+								},
+								{
+									"key": "questionId",
+									"value": "78"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Respuestas de Encuestas",
+			"item": [
+				{
+					"name": "GetResponses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/surveys/:id/responses",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"surveys",
+								":id",
+								"responses"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PostResponses",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"respuesta\": [\r\n      {\r\n        \"idPregunta\": 1,\r\n        \"tipo\": \"abierta\",\r\n        \"texto\": \"¿Cómo calificarías la amabilidad del personal de nuestra tienda?\",\r\n        \"respuesta\": \"Excelente\",\r\n        \"required\": true\r\n      },\r\n      {\r\n        \"idPregunta\": 2,\r\n        \"tipo\": \"eleccion_simple\",\r\n        \"texto\": \"¿Recomendarías nuestra tienda a tus amigos?\",\r\n        \"option_seleccionada\": \"Si\",\r\n        \"required\": true\r\n      },\r\n      {\r\n        \"idPregunta\": 3,\r\n        \"tipo\": \"eleccion_multiple\",\r\n        \"texto\": \"¿Qué sección de nuestra tienda te gusta más?\",\r\n        \"option_seleccionada\": [\"Ropa\"],\r\n        \"required\": false\r\n      }\r\n    ]\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/surveys/:id/responses",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"surveys",
+								":id",
+								"responses"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Encuestados",
+			"item": [
+				{
+					"name": "PostRespondents",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Pedro\",\r\n    \"email\": \"pedro@gmail.com\",\r\n    \"password\": \"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/respondents",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"respondents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetRespondents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/respondents",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"respondents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetRespondentsID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/respondents/:id",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"respondents",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PutRespondentsID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Juan\",\r\n    \"email\": \"juan@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/respondents/:id",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"respondents",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteRespondentsID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/respondents/:id",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"respondents",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reportes y Análisis",
+			"item": [
+				{
+					"name": "GetSurveysIDAnalysis",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/surveys/:id/analysis",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"surveys",
+								":id",
+								"analysis"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
