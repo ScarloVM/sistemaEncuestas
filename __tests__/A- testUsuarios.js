@@ -105,7 +105,7 @@ const encuestaPrueba3 = {
 
 describe('GET /', () => {
   it('Deberia retornar "ola Kennors"', async () => {
-    const response = await request('http://localhost:3000').get('/');
+    const response = await request('app:3000').get('/');
     expect(response.status).toBe(200);
     expect(response.text).toBe('ola Kennors');
   });
@@ -115,7 +115,7 @@ describe('GET /', () => {
 
 describe('POST /auth/register Admin', () => {
   it('Deberia registrar un usuario administrador', async () => {
-    const response = await request('http://localhost:3000')
+    const response = await request('app:3000')
       .post('/auth/register')
       .send(userAdmin);
     expect(response.status).toBe(201);
@@ -126,7 +126,7 @@ describe('POST /auth/register Admin', () => {
 
 describe('POST /auth/register Creador ', () => {
   it('Deberia registrar un usuario creador de encuestas', async () => {
-    const response = await request('http://localhost:3000')
+    const response = await request('http://app:3000')
       .post('/auth/register')
       .send(userCreador);
     expect(response.status).toBe(201);
@@ -137,7 +137,7 @@ describe('POST /auth/register Creador ', () => {
 
 describe('POST /auth/register Encuestado', () => {
   it('Deberia registrar un usuario encuestado', async () => {
-    const response = await request('http://localhost:3000')
+    const response = await request('http://app:3000')
       .post('/auth/register')
       .send(userEncuestado);
     expect(response.status).toBe(201);
@@ -148,7 +148,7 @@ describe('POST /auth/register Encuestado', () => {
 
 describe('POST /auth/login Admin', () => {
   it('Deberia loguear un usuario', async () => {
-    const response = await request('http://localhost:3000')
+    const response = await request('http://app:3000')
       .post('/auth/login')
       .send({ email: userAdmin.email, password: userAdmin.password });
     expect(response.status).toBe(200);
@@ -160,7 +160,7 @@ describe('POST /auth/login Admin', () => {
 
 describe('GET /users Admin', () => {
   it('Deberia retornar la lista de usuarios', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token
     const loginResponse = await agent
@@ -179,7 +179,7 @@ describe('GET /users Admin', () => {
 
 describe('GET /users Creador', () => {
   it('Deberia retornar la lista de usuarios', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token
     const loginResponse = await agent
@@ -200,7 +200,7 @@ describe('GET /users Creador', () => {
 describe('GET /users:userId Admin', () => {
 
   it('Deberia retornar un usuario', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token
     const loginResponse = await agent
@@ -220,7 +220,7 @@ describe('GET /users:userId Admin', () => {
 
 describe('PUT /users:userId Admin', () => {
   it('Deberia actualizar un usuario', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token
     const loginResponse = await agent
@@ -242,7 +242,7 @@ describe('PUT /users:userId Admin', () => {
 
 describe('PUT /users:userId El mismo', () => {
   it('Deberia actualizar un usuario', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token
     const loginResponse = await agent
@@ -264,7 +264,7 @@ describe('PUT /users:userId El mismo', () => {
 
 describe('PUT /users:userId otro Usuario', () => {
   it('Deberia actualizar un usuario', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token
     const loginResponse = await agent
@@ -288,7 +288,7 @@ userAdmin.email = 'admin2@email.com';
 
 describe('DELETE /users:userId Admin', () => {
   it('Deberia eliminar un usuario', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token
     const loginResponse = await agent
@@ -309,7 +309,7 @@ describe('DELETE /users:userId Admin', () => {
 describe('DELETE /users:userId Creador', () => {
 
   it('Deberia eliminar un usuario', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token
     const loginResponse = await agent
@@ -330,7 +330,7 @@ describe('DELETE /users:userId Creador', () => {
 //Pruebas Unitarias para Respuestas de Encuestas
 describe('POST /surveys/:id/responses', () => {
   it('Deberia responder una encuesta', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token
     const loginResponse = await agent
@@ -395,7 +395,7 @@ describe('POST /surveys/:id/responses', () => {
 
 describe('GET /surveys/:id/responses', () => {
   it('Deberia obtener las respuestas de una encuesta', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token
     const loginResponse = await agent
@@ -415,7 +415,7 @@ describe('GET /surveys/:id/responses', () => {
 //Pruebas unitarias Encuestados
 describe('POST /respondents', () => {
   it('Deberia crear un encuestado', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token
     const loginResponse = await agent
@@ -439,7 +439,7 @@ describe('POST /respondents', () => {
 
 describe('GET /respondents', () => {
   it('Deberia obtener la lista de encuestados', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token
     const loginResponse = await agent
@@ -458,7 +458,7 @@ describe('GET /respondents', () => {
 
 describe('GET /respondents/:id', () => {
   it('Deberia obtener un encuestado por su ID', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token
     const loginResponse = await agent
@@ -477,7 +477,7 @@ describe('GET /respondents/:id', () => {
 
 describe('PUT /respondents/:id', () => {
   it('Deberia actualizar un encuestado por su ID', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token
     const loginResponse = await agent
@@ -500,7 +500,7 @@ describe('PUT /respondents/:id', () => {
 
 describe('DELETE /respondents/:id', () => {
   it('Deberia eliminar un encuestado por su ID', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token
     const loginResponse = await agent
@@ -520,7 +520,7 @@ describe('DELETE /respondents/:id', () => {
 
 describe('GET /surveys/:id/analysis', () => {
   it('Deberia obtener el análisis de una encuesta', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token
     const loginResponse = await agent
@@ -539,7 +539,7 @@ describe('GET /surveys/:id/analysis', () => {
 
 describe('POST /surveys Admin', () => {
   it('Debería crear una nueva encuesta como administrador', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token
     const loginResponse = await agent
@@ -563,7 +563,7 @@ describe('POST /surveys Admin', () => {
 
 describe('POST /surveys creador', () => {
   it('Debería crear una nueva encuesta como creador de encuestas', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token
     const loginResponse = await agent
@@ -587,7 +587,7 @@ describe('POST /surveys creador', () => {
 describe('POST /surveys encuestado', () => {
 
   it('Deberia retornar 403 al intentar crear una encuesta', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token
     const loginResponse = await agent
@@ -609,7 +609,7 @@ describe('POST /surveys encuestado', () => {
 
 describe('GET /surveys', () => {
   it('Deberia retornar la lista de encuestas', async () => {
-    const response = await request('http://localhost:3000').get('/surveys');
+    const response = await request('http://app:3000').get('/surveys');
     expect(response.status).toBe(200);
   });
 });
@@ -617,7 +617,7 @@ describe('GET /surveys', () => {
 
 describe('GET /surveys/:id', () => {
   it('Deberia retornar una encuesta por su ID', async () => {
-    const response = await request('http://localhost:3000').get('/surveys/77');
+    const response = await request('http://app:3000').get('/surveys/77');
     expect(response.status).toBe(200);
   });
 });
@@ -625,7 +625,7 @@ describe('GET /surveys/:id', () => {
 
 describe('PUT /surveys/:id Admin', () => {
   it('Debería actualizar una encuesta como administrador', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token como administrador
     const loginResponse = await agent
@@ -680,7 +680,7 @@ describe('PUT /surveys/:id Admin', () => {
 
 describe('PUT /surveys/:id Creador', () => {
   it('Debería actualizar una encuesta como creador de encuestas', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token como creador de encuestas
     const loginResponse = await agent
@@ -733,7 +733,7 @@ describe('PUT /surveys/:id Creador', () => {
 
 describe('DELETE /surveys/:id Admin', () => {
   it('Debería eliminar una encuesta como administrador', async () => {
-    const agent = request.agent('http://localhost:3000'); // Crea un agente para mantener las cookies
+    const agent = request.agent('http://app:3000'); // Crea un agente para mantener las cookies
 
     // Realiza una solicitud POST para iniciar sesión y obtener el token como administrador
     const loginResponse = await agent
