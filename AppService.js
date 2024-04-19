@@ -347,26 +347,27 @@ class AppService {
             // Obtener la encuesta por su ID
             const existingSurvey = await this.database2.findSurveyById(surveyId);
             if (!existingSurvey) {
-                console.log('Encuesta no encontrada');
                 return false; // Encuesta no encontrada
             }
             
             // Buscar la pregunta por su ID dentro de la encuesta
             const questionIndex = existingSurvey.questions.findIndex(q => q.idPregunta === parseInt(questionId));
             if (questionIndex === -1) {
-                console.log('Pregunta no encontrada en la encuesta');
                 return false; // Pregunta no encontrada en la encuesta
             }
             
-            // Actualizar la pregunta con la nueva información
-            existingSurvey.questions[questionIndex] = updatedQuestion;
+            // Actualizar solo los campos proporcionados en updatedQuestion
+            existingSurvey.questions[questionIndex] = {
+                ...existingSurvey.questions[questionIndex], // Mantiene los campos existentes
+                ...updatedQuestion // Actualiza con los nuevos campos proporcionados
+            };
             
             // Actualizar la encuesta en la base de datos
             const result = await this.database2.updateSurveyById(surveyId, existingSurvey);
-
+    
             const cachedSurveyId = await this.redisClient.get(`survey:${surveyId}`);
             const cachedSurveys = await this.redisClient.get('surveys');
-
+    
             if (cachedSurveyId){
                 await this.redisClient.del(`survey:${surveyId}`);
                 console.log(`Survey with ID ${surveyId} deleted from cache`);
@@ -374,7 +375,7 @@ class AppService {
             else{
                 console.log(`Survey with ID ${surveyId} not found in cache`);
             }
-
+    
             if (cachedSurveys){
                 await this.redisClient.del('surveys');
                 console.log('Surveys deleted from cache');
@@ -382,8 +383,7 @@ class AppService {
             else{
                 console.log('Surveys not found in cache');
             }
-
-            
+    
             return result > 0; // Devolver true si la encuesta se actualizó correctamente
         } catch (error) {
             console.error(`Error al actualizar la pregunta de la encuesta: ${error}`);
