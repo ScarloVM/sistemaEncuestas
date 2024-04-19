@@ -453,6 +453,7 @@ class AppService {
         }
         catch(e){
             console.error(`Failed to create response ${e}`);
+            throw e;
         }
     }
 
@@ -473,6 +474,7 @@ class AppService {
         }
         catch(e){
             console.error(`Failed to get response ${e}`);
+            throw e;
         }
     }
 
@@ -492,6 +494,7 @@ class AppService {
         }
         catch(e){
             console.error(`Failed to create respondent ${e}`);
+            throw e;
         }
     }
 
@@ -512,6 +515,7 @@ class AppService {
         }
         catch(e){
             console.error(`Failed to get respondents ${e}`);
+            throw e;
         }
     }
 
@@ -537,6 +541,7 @@ class AppService {
         }
         catch(e){
             console.error(`Failed to get respondent by id ${e}`);
+            throw e;
         }
     }
 
@@ -565,6 +570,7 @@ class AppService {
         }
         catch(e){
             console.error(`Failed to update respondent ${e}`);
+            throw e;
         }
     }
 
@@ -593,6 +599,7 @@ class AppService {
         }
         catch(e){
             console.error(`Failed to delete respondent ${e}`);
+            throw e;
         }
     }
 
@@ -615,6 +622,7 @@ class AppService {
         }
         catch(e){
             console.error(`Failed to get analysis ${e}`);
+            throw e;
         }
     }
 
