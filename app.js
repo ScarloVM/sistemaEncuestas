@@ -229,7 +229,7 @@ app.delete('/surveys/:id/questions/:questionId', authenticateAdminOrSurveyCreato
 
 // Respuestas de encuestas
 
-app.post('/surveys/:id/responses', async (req, res) => {
+app.post('/surveys/:id/responses', authenticateTokenEncuestado, async (req, res) => {
     try {
         const response = await appService.insertResponse(req.body, req.params.id);
         console.log(response);
@@ -292,7 +292,8 @@ app.get('/surveys/:id/analysis', authenticateAdminCreator, async (req, res) => {
 
 
 // Middleware para verificar el token JWT y autenticar al usuario
-function authenticateToken(req, res, next) {
+function authenticateTokenEncuestado(req, res, next) {
+
     const token = req.cookies.token;
     if (!token) {
         return res.status(401).send('Se requiere un token de autenticación');
@@ -303,11 +304,10 @@ function authenticateToken(req, res, next) {
         if (err) {
             return res.status(403).send('Token de autenticación inválido');
         }
-        // Extraer la información del payload
-        const { username, role } = decoded;
-
-        // Guardar la información en el objeto de solicitud (req) para su uso posterior
-        req.user = { username, role };
+        req.body.correoEncuestado = decoded.email;
+        if (decoded.role !== 3) {
+            return res.status(403).send('Acceso denegado. Se requiere rol de encuestado');
+        }
 
         next();
     });
@@ -323,6 +323,7 @@ function authenticateAdmin(req, res, next) {
     
     // Verificar y decodificar el token JWT
     jwt.verify(token, 'secreto', (err, decoded) => {
+        req.body.emailCreador = decoded.email;
         if (err) {
             return res.status(403).send('Token de autenticación inválido');
         }
@@ -343,6 +344,7 @@ function authenticateAdminCreator(req, res, next) {
     
     // Verificar y decodificar el token JWT
     jwt.verify(token, 'secreto', (err, decoded) => {
+        req.body.emailCreador = decoded.email;
         if (err) {
             return res.status(403).send('Token de autenticación inválido');
         }

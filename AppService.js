@@ -455,15 +455,6 @@ class AppService {
                 console.log('Surveys not found in cache');
             }
 
-            const encuestado = await this.database.getUserByEmail(request_json.correoEncuestado);
-            if (!encuestado) {
-                throw new Error('Encuestado no encontrado');
-            }
-            else{
-                if (encuestado.rol !== 3) {
-                    throw new Error('El usuario no tiene permiso para responder la encuesta');
-                }
-            }
 
             return await this.database2.insertResponse(request_json, survey_id);
         }
