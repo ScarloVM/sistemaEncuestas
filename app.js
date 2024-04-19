@@ -285,7 +285,7 @@ app.delete('/respondents/:id', authenticateAdminCreator, async (req, res) => {
 });
 
 // Reportes y analisis
-app.get('/surveys/:id/analysis', async (req, res) => { // r
+app.get('/surveys/:id/analysis', authenticateAdminCreator, async (req, res) => { // r
     const analysis = await appService.getAnalysis(req.params.id);
     res.send(analysis);
 });
