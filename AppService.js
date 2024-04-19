@@ -77,6 +77,7 @@ class AppService {
         }
         catch(e){
             console.error(`Failed to get user by id ${e}`);
+            throw e;
         }
     }
 
@@ -104,6 +105,7 @@ class AppService {
         }
         catch(e){
             console.error(`Failed to update user ${e}`);
+            throw e;
         }
     }
 
@@ -131,6 +133,7 @@ class AppService {
         }
         catch(e){
             console.error(`Failed to delete user ${e}`);
+            throw e;
         }
     }
 

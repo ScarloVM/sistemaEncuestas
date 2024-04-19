@@ -10,9 +10,9 @@ class RedisClient {
     async connect() {
         try {
             await this.client.connect();
-            console.log('Connected REDISMIERDA');
+            console.log('Connected REDIS');
         } catch (e) {
-            console.error(`Failed to connect to REDISMIERDA: ${e}`);
+            console.error(`Failed to connect to REDIS: ${e}`);
         }
     }
 

@@ -86,6 +86,7 @@ async createUser(username, email, password, rol) {
             await this.client.query('DELETE FROM users WHERE id = $1', [id]);
         } catch (e) {
             console.error(`Failed to delete user ${e}`);
+            throw e;
         }
     }
 
