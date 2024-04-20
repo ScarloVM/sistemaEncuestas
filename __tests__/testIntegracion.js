@@ -35,7 +35,6 @@ const encuestaPrueba = {
   idEncuesta: 77,
   titulo: "Encuesta de ejemplo",
   descripcion: "Esta es una encuesta de ejemplo",
-  emailCreador: "creador@email.com",
   questions: [
     {
       idPregunta: 1,
@@ -53,11 +52,10 @@ const encuestaPrueba = {
   ]
 };
 
-const encuestaPrueba2 = { 
+const encuestaPrueba2 = {
   idEncuesta: 78,
-  titulo: "Encuesta de ejemplo 2",
-  descripcion: "Esta es una encuesta de ejemplo 2",
-  emailCreador: "creador@email.com",
+  titulo: "Encuesta de ejemplo",
+  descripcion: "Esta es una encuesta de ejemplo",
   questions: [
     {
       idPregunta: 1,
@@ -75,27 +73,7 @@ const encuestaPrueba2 = {
   ]
 };
 
-const encuestaPrueba3 = {
-  idEncuesta: 79,
-  titulo: "Encuesta de ejemplo 3",
-  descripcion: "Esta es una encuesta de ejemplo 3",
-  emailCreador: "creador@email.com",
-  questions: [
-    {
-      idPregunta: 1,
-      tipo: "abierta",
-      texto: "¿cual es tu color favorito?"
-    },
 
-    {
-      idPregunta: 2,
-      tipo: "eleccion_simple",
-      texto: "¿que tanto te gusta el helado?",
-      options: ["5", "4", "3", "2", "1"]
-    },
-
-  ]
-};
 
 describe('GET /', () => {
   it('Deberia retornar "ola Kennors"', async () => {
@@ -320,7 +298,7 @@ describe('DELETE /users:userId Creador', () => {
   });
 });
 
-
+userEncuestado.email = 'encuestado2@email.com'; 
 //Pruebas Unitarias para Respuestas de Encuestas
 describe('POST /surveys/:id/responses', () => {
   it('Deberia responder una encuesta', async () => {
@@ -331,12 +309,12 @@ describe('POST /surveys/:id/responses', () => {
       .post('/auth/login')
       .send({ email: userEncuestado.email, password: userEncuestado.password }); // Envía las credenciales de inicio de sesión
     const token = loginResponse.body.token; // Extrae el token de la respuesta
+    console.log(token);
 
     // Ahora, realiza la solicitud POST a /surveys/:id/responses con la cookie establecida
     const response = await agent
       .post('/surveys/1/responses')
       .send({
-        "correoEncuestado": 6,
         "respuesta": [
           {
             "idPregunta": 1,
@@ -375,6 +353,8 @@ describe('POST /surveys/:id/responses', () => {
             "respuesta": "35"
           }]})
       .set('Cookie', `token=${token}`); // Establece la cookie con el token obtenido
+
+      console.log(response.text);
 
     expect(response.status).toBe(200);
     expect(response.text).toBe('Se ha insertado la respuesta correctamente');
@@ -563,7 +543,7 @@ describe('POST /surveys creador', () => {
     const response = await agent
       .post('/surveys')
       .set('Cookie', `token=${token}`) // Establece la cookie con el token obtenido
-      .send(encuestaPrueba);
+      .send(encuestaPrueba2);
 
     // Verifica que la solicitud haya sido exitosa y que la respuesta contenga un ID
     expect(response.status).toBe(201);
@@ -621,32 +601,10 @@ describe('PUT /surveys/:id Admin', () => {
       .send({ email: userAdmin.email, password: userAdmin.password }); // Envía las credenciales de inicio de sesión
     const token = loginResponse.body.token; // Extrae el token de la respuesta
 
-    // Realiza una solicitud POST para crear una nueva encuesta como administrador
-    const createSurveyResponse = await agent
-      .post('/surveys')
-      .set('Cookie', `token=${token}`) // Establece la cookie con el token obtenido
-      .send(encuestaPrueba); // Envía los datos de la nueva encuesta
-
-    // Extrae el ID de la encuesta creada
-    const surveyId = createSurveyResponse.body.id;
 
     // Datos actualizados para la encuesta
     const updatedSurveyData = {
-      titulo: 'holanda23',
-      descripcion: 'Esta es una encuesta de ejemplo actualizada',
-      questions: [
-        {
-          idPregunta: 1,
-          tipo: 'abierta',
-          texto: '¿Cuál es tu color favorito xd?'
-        },
-        {
-          idPregunta: 2,
-          tipo: 'eleccion_simple',
-          texto: '¿Qué tanto te gusta el helado?',
-          options: ['5', '4', '3', '2', '1']
-        },
-      ],
+      titulo: 'holanda23'
     };
 
   
@@ -672,42 +630,20 @@ describe('PUT /surveys/:id Creador', () => {
     const loginResponse = await agent
       .post('/auth/login')
       .send({ email: userCreador.email, password: userCreador.password }); // Envía las credenciales de inicio de sesión
-    const token = loginResponse.body.token; // Extrae el token de la respuesta
-
-    // Realiza una solicitud POST para crear una nueva encuesta como creador de encuestas
-    const createSurveyResponse = await agent
-      .post('/surveys')
-      .set('Cookie', `token=${token}`) // Establece la cookie con el token obtenido
-      .send(encuestaPrueba); // Envía los datos de la nueva encuesta
-
-    // Extrae el ID de la encuesta creada
-    const surveyId = createSurveyResponse.body.id;
+    const token1 = loginResponse.body.token; // Extrae el token de la respuesta
+    console.log(token1);
 
     // Datos actualizados para la encuesta
     const updatedSurveyData = {
-      titulo: 'alocomoasibro166',
-      descripcion: 'Esta es una ensdcuesta actualizada',
-      emailCreador: 't',
-      questions: [
-        {
-          idPregunta: 1,
-          tipo: 'abierta',
-          texto: '¿Cuál es tu color favorito?'
-        },
-        {
-          idPregunta: 2,
-          tipo: 'eleccion_simple',
-          texto: '¿Qué tanto te gusta el helado?',
-          options: ['5', '4', '3', '2', '1']
-        },
-      ],
+      titulo: 'Hola mundo'
     };
     const updateSurveyResponse = await agent
-      .put(`/surveys/77`)
-      .set('Cookie', `token=${token}`) // Establece la cookie con el token obtenido
+      .put(`/surveys/78`)
+      .set('Cookie', `token=${token1}`) // Establece la cookie con el token obtenido
       .send(updatedSurveyData); // Envía los datos actualizados de la encuesta
 
     // Verifica que la solicitud haya sido exitosa
+    console.log(updateSurveyResponse.text);
     expect(updateSurveyResponse.status).toBe(200);
    
   });

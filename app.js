@@ -376,6 +376,12 @@ async function authenticateAdminOrSurveyCreator(req, res, next) {
 
         // Verificar si el usuario es administrador o creador de la encuesta
         if (decoded.role === 1) {
+            const survey = await db2.findSurveyById(req.params.id); 
+                if (!survey) {
+                    return res.status(404).send('Encuesta no encontrada');
+                }
+                const creatorEmail = survey.emailCreador;
+                console.log("creatorEmail: ", creatorEmail, "email: ", decoded.email)
             // El usuario es administrador
             next();
         } else {
@@ -393,6 +399,7 @@ async function authenticateAdminOrSurveyCreator(req, res, next) {
                     next();
                 } else {
                     // El usuario no es administrador ni el creador de la encuesta
+                    console.log("decoded.email: ", decoded.email, "creatorEmail: ", creatorEmail)
                     return res.status(403).send('Acceso denegado. Se requiere rol de administrador o ser el creador de la encuesta');
                 }
             } catch (error) {
