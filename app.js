@@ -434,6 +434,19 @@ function authenticateOwnRole(req, res, next) {
     });
 }
 
+// Nuevos endpoints
+
+app.post('/surveys/:id/edit/start',async (req,res)=>{
+
+    })
+
+app.post('/surveys/:id/edit/submit',async (req,res)=>{
+
+})
+
+app.get('/surveys/:id/edit/status',async (req,res)=>{
+    
+})
 
 
 
