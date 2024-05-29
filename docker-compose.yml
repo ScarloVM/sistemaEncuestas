@@ -83,6 +83,17 @@ services:
       - '6379:6379'
     networks:
       - web
+
+  streamlit_app:
+    build:
+      context: ./streamlit
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./streamlit:/app
+    networks:
+      - web
+    
   
   zoo1:     
     image: confluentinc/cp-zookeeper:7.3.2     
@@ -134,3 +145,4 @@ services:
 networks:
   web:
     driver: bridge
+
