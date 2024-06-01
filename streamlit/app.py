@@ -1,64 +1,122 @@
-import os
 import streamlit as st
 import pandas as pd
 from pymongo import MongoClient
+from pyspark.sql.types import StructType, StructField, StringType, ArrayType, IntegerType
+from pyspark.sql.functions import explode, col
 
-# Obtener los valores de las variables de entorno
-# Obtener las variables de entorno para la conexión a MongoDB
-mongo_url = os.getenv("MONGO_URL", "mongodb://mongo:27017")
-mongo_db_name = os.getenv("MONGO_NAME", "sistemaEncuestas")
-mongo_user = os.getenv("MONGO_USER", "root")
-mongo_password = os.getenv("MONGO_PASSWORD", "example")
-
-# Construir la URI de conexión con credenciales
+# MongoDB connection setup
 mongo_uri = "mongodb://root:example@mongo/admin"
-
-# Conexión a MongoDB utilizando las variables de entorno
 client = MongoClient(mongo_uri)
-db = client[mongo_db_name]  # Nombre de tu base de datos
-collection = db['encuestas']  # Nombre de tu colección
-st.title("Dashboard Visualizacion de Datos") # Título de la app
+db = client['sistemaEncuestas']
+collection = db['encuestas']
 
-# Encuentra el documento con idEncuesta 1
-# Encuentra el documento con idEncuesta 1
+# Fetch data from MongoDB
 data = collection.find_one({'idEncuesta': 1})
 
+# Data processing with PySpark
+from pyspark.sql import SparkSession
+spark = SparkSession.builder \
+    .appName("Streamlit_Analysis") \
+    .master("local") \
+    .getOrCreate()
+
+# Define Schema
+schema = StructType([
+    StructField("idEncuesta", IntegerType(), True),
+    StructField("titulo", StringType(), True),
+    StructField("descripcion", StringType(), True),
+    StructField("emailCreador", StringType(), True),
+    StructField("estado", StringType(), True),
+    StructField("questions", ArrayType(StructType([
+        StructField("idPregunta", IntegerType(), True),
+        StructField("tipo", StringType(), True),  
+        StructField("texto", StringType(), True),
+        StructField("options", ArrayType(StringType()), True)
+    ])), True),
+    StructField("respuestas", ArrayType(StructType([
+        StructField("correoEncuestado", IntegerType(), True),
+        StructField("respuesta", ArrayType(StructType([
+            StructField("idPregunta", IntegerType(), True),
+            StructField("tipo", StringType(), True),
+            StructField("texto", StringType(), True),
+            StructField("respuesta", StringType(), True),
+            StructField("option_seleccionada", StringType(), True)
+        ])), True)
+    ])), True)
+])
+
+df = spark.createDataFrame([data], schema=schema)
+
+# Data manipulation with PySpark DataFrame
+respuestas_por_correo = df.groupBy("respuestas.correoEncuestado").count()
+
+# Streamlit app interface
+st.title("Análisis de Encuestas")
+
+# Cantidad de Respuestas por Correo Electrónico
+st.subheader("Cantidad de Respuestas por Correo Electrónico:")
+st.write(respuestas_por_correo.toPandas())
+
+# Distribución de tipos de pregunta
+st.subheader("Distribución de Tipos de Pregunta:")
+# Explode the 'questions' array to create a row for each question
+df_exploded = df.select(explode("questions").alias("question"))
+
+# Group by question type and count the occurrences of each type
+question_types_counts = df_exploded.groupBy("question.tipo").count()
+
+# Convert to Pandas DataFrame for use in Streamlit
+question_types_counts_pd = question_types_counts.toPandas()
+
+st.write(question_types_counts_pd)
+
+
+##############################################################
+
+# Explorar las preguntas
+questions_df = df.select(explode(col("questions")).alias("question")).select("question.*")
+questions_df.show(truncate=False)
+
+# Explorar las respuestas
+respuestas_df = df.select(explode(col("respuestas")).alias("respuesta")).select("respuesta.*")
+respuestas_df = respuestas_df.withColumn("respuesta", explode(col("respuesta"))).select("correoEncuestado", "respuesta.*")
+respuestas_df.show(truncate=False)
+
 # Función para procesar las respuestas
-def procesar_respuestas(encuesta_data):
+def procesar_respuestas_spark(questions_df, respuestas_df):
     respuestas_procesadas = {}
-    for pregunta in encuesta_data['questions']:
-        id_pregunta = pregunta['idPregunta']
-        tipo = pregunta['tipo']
-        texto = pregunta['texto']
-        
+
+    for pregunta in questions_df.collect():
+        id_pregunta = pregunta.idPregunta
+        tipo = pregunta.tipo
+        texto = pregunta.texto
+
         if tipo == "abierta":
-            respuestas_procesadas[id_pregunta] = []
+            respuestas_procesadas[id_pregunta] = respuestas_df.filter(col("idPregunta") == id_pregunta).select("respuesta").collect()
         elif tipo == "numerica":
-            respuestas_procesadas[id_pregunta] = []
+            respuestas_procesadas[id_pregunta] = respuestas_df.filter(col("idPregunta") == id_pregunta).select(col("respuesta").cast(IntegerType())).collect()
+        elif tipo == "eleccion_multiple":
+            opciones = pregunta.options
+            respuestas_procesadas[id_pregunta] = {opcion: 0 for opcion in opciones}
+            counts = respuestas_df.filter(col("idPregunta") == id_pregunta).collect()
+            for opcion in opciones:
+                for row in counts:
+                    if opcion in row['option_seleccionada']:
+                        respuestas_procesadas[id_pregunta][opcion] += 1
+            
         else:
-            respuestas_procesadas[id_pregunta] = {op: 0 for op in pregunta.get('options', [])}
-    
-    for respuesta in encuesta_data['respuestas']:
-        for r in respuesta['respuesta']:
-            id_pregunta = r['idPregunta']
-            tipo = r['tipo']
-            if tipo == "abierta":
-                respuestas_procesadas[id_pregunta].append(r['respuesta'])
-            elif tipo == "eleccion_simple" or tipo == "Si/No":
-                respuestas_procesadas[id_pregunta][r['option_seleccionada']] += 1
-            elif tipo == "eleccion_multiple":
-                for op in r['option_seleccionada']:
-                    respuestas_procesadas[id_pregunta][op] += 1
-            elif tipo == "escala_calificacion":
-                respuestas_procesadas[id_pregunta][r['option_seleccionada']] += 1
-            elif tipo == "numerica":
-                respuestas_procesadas[id_pregunta].append(int(r['respuesta']))
-    
+            opciones = pregunta.options
+            counts = respuestas_df.filter(col("idPregunta") == id_pregunta).groupBy("option_seleccionada").count().collect()
+            respuestas_procesadas[id_pregunta] = {opcion: 0 for opcion in opciones}
+            for row in counts:
+                respuestas_procesadas[id_pregunta][row.option_seleccionada] = row['count']
+
     return respuestas_procesadas
 
-# Procesar respuestas
-def crear_graficos(doc):
-    respuestas_procesadas = procesar_respuestas(doc)
+# Crear gráficos y mostrar estadísticas
+def crear_graficos_spark(doc, preguntas_df, respuestas_df):
+    respuestas_procesadas = procesar_respuestas_spark(preguntas_df, respuestas_df)
+    print(respuestas_procesadas)
 
     # Mostrar las estadísticas
     st.header(doc["titulo"])
@@ -68,11 +126,11 @@ def crear_graficos(doc):
         st.header(pregunta['texto'])
         id_pregunta = pregunta['idPregunta']
         tipo = pregunta['tipo']
-        
+
         if tipo == "abierta":
             st.write("Respuestas de texto:")
             for respuesta in respuestas_procesadas[id_pregunta]:
-                st.write(f"- {respuesta}")
+                st.write(f"- {respuesta['respuesta']}")
         
         elif tipo in ["eleccion_simple", "eleccion_multiple", "Si/No", "escala_calificacion"]:
             st.write("Distribución de respuestas:")
@@ -81,8 +139,9 @@ def crear_graficos(doc):
         
         elif tipo == "numerica":
             st.write("Estadísticas numéricas:")
-            df = pd.DataFrame(respuestas_procesadas[id_pregunta], columns=['Valor'])
+            valores = [r['respuesta'] for r in respuestas_procesadas[id_pregunta]]
+            df = pd.DataFrame(valores, columns=['Valor'])
             st.write(df.describe())
 
-# Crear gráficos
-crear_graficos(data)
+# Crear gráficos para la encuesta
+crear_graficos_spark(data, questions_df, respuestas_df)
