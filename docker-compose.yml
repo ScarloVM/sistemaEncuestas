@@ -20,11 +20,11 @@ services:
     depends_on:
       - db
       - cache
+      - neo4j
     volumes:
       - .:/usr/src/app
     command: npm start
   
-
   db:
     image: postgres:16
     environment:
@@ -93,13 +93,17 @@ services:
       - ./streamlit:/app
     networks:
       - web
+<<<<<<< Updated upstream
     
+=======
+  
+>>>>>>> Stashed changes
   zoo1:     
     image: confluentinc/cp-zookeeper:7.3.2     
     hostname: zoo1     
     container_name: zoo1     
     ports:       
-    - "2181:2181"     
+      - "2181:2181"     
     environment:       
       ZOOKEEPER_CLIENT_PORT: 2181       
       ZOOKEEPER_SERVER_ID: 1       
@@ -140,6 +144,21 @@ services:
       KAFKA_BROKERCONNECT: "kafka1:19092"
     depends_on:
       - kafka1
+  neo4j:
+    image: neo4j:latest
+    restart: always
+    ports:
+      - 7474:7474
+      - 7687:7687
+    environment:
+      NEO4J_AUTH: neo4j/strongpassword123
+    volumes:
+      - ./neo4j/data:/data
+      - ./neo4j/logs:/logs
+      - ./neo4j/import:/var/lib/neo4j/import
+      - ./neo4j/plugins:/plugins
+    networks:
+      - web
 
   spark:
       image: bitnami/spark:latest
@@ -154,4 +173,3 @@ services:
 networks:
   web:
     driver: bridge
-
