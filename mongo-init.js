@@ -46,7 +46,7 @@ db.encuestas.insertOne({
     ],
     "respuestas": [
       {
-        "correoEncuestado": 1,
+        "correoEncuestado": "1",
         "respuesta": [
           {
             "idPregunta": 1,
@@ -87,7 +87,7 @@ db.encuestas.insertOne({
         ]
       },
       {
-        "correoEncuestado": 2,
+        "correoEncuestado": "2",
         "respuesta": [
           {
             "idPregunta": 1,
@@ -128,7 +128,7 @@ db.encuestas.insertOne({
         ]
       },
       {
-        "correoEncuestado": 3,
+        "correoEncuestado": "3",
         "respuesta": [
           {
             "idPregunta": 1,
@@ -169,7 +169,7 @@ db.encuestas.insertOne({
         ]
       },
       {
-        "correoEncuestado": 4,
+        "correoEncuestado": "4",
         "respuesta": [
           {
             "idPregunta": 1,
@@ -210,7 +210,7 @@ db.encuestas.insertOne({
         ]
       },
       {
-        "correoEncuestado": 5,
+        "correoEncuestado": "5",
         "respuesta": [
           {
             "idPregunta": 1,

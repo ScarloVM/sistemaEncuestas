@@ -1,26 +1,24 @@
+import time
 import streamlit as st
 import pandas as pd
 from pymongo import MongoClient
 from pyspark.sql.types import StructType, StructField, StringType, ArrayType, IntegerType
-from pyspark.sql.functions import explode, col
+from pyspark.sql.functions import explode, col, countDistinct
 
-# MongoDB connection setup
+# Conexion a MongoDB
 mongo_uri = "mongodb://root:example@mongo/admin"
 client = MongoClient(mongo_uri)
 db = client['sistemaEncuestas']
 collection = db['encuestas']
 
-# Fetch data from MongoDB
-data = collection.find_one({'idEncuesta': 1})
-
-# Data processing with PySpark
+# Crear sesion de Spark que se conecta al contenedor de Spark
 from pyspark.sql import SparkSession
 spark = SparkSession.builder \
     .appName("Streamlit_Analysis") \
-    .master("local") \
+    .master("spark://spark:7077") \
     .getOrCreate()
 
-# Define Schema
+# Crear una estructura para el DataFrame de PySpark a partir de las encuestas desde MongoDB
 schema = StructType([
     StructField("idEncuesta", IntegerType(), True),
     StructField("titulo", StringType(), True),
@@ -34,7 +32,7 @@ schema = StructType([
         StructField("options", ArrayType(StringType()), True)
     ])), True),
     StructField("respuestas", ArrayType(StructType([
-        StructField("correoEncuestado", IntegerType(), True),
+        StructField("correoEncuestado", StringType(), True),
         StructField("respuesta", ArrayType(StructType([
             StructField("idPregunta", IntegerType(), True),
             StructField("tipo", StringType(), True),
@@ -45,47 +43,10 @@ schema = StructType([
     ])), True)
 ])
 
-df = spark.createDataFrame([data], schema=schema)
-
-# Data manipulation with PySpark DataFrame
-respuestas_por_correo = df.groupBy("respuestas.correoEncuestado").count()
-
-# Streamlit app interface
-st.title("Análisis de Encuestas")
-
-# Cantidad de Respuestas por Correo Electrónico
-st.subheader("Cantidad de Respuestas por Correo Electrónico:")
-st.write(respuestas_por_correo.toPandas())
-
-# Distribución de tipos de pregunta
-st.subheader("Distribución de Tipos de Pregunta:")
-# Explode the 'questions' array to create a row for each question
-df_exploded = df.select(explode("questions").alias("question"))
-
-# Group by question type and count the occurrences of each type
-question_types_counts = df_exploded.groupBy("question.tipo").count()
-
-# Convert to Pandas DataFrame for use in Streamlit
-question_types_counts_pd = question_types_counts.toPandas()
-
-st.write(question_types_counts_pd)
-
-
-##############################################################
-
-# Explorar las preguntas
-questions_df = df.select(explode(col("questions")).alias("question")).select("question.*")
-questions_df.show(truncate=False)
-
-# Explorar las respuestas
-respuestas_df = df.select(explode(col("respuestas")).alias("respuesta")).select("respuesta.*")
-respuestas_df = respuestas_df.withColumn("respuesta", explode(col("respuesta"))).select("correoEncuestado", "respuesta.*")
-respuestas_df.show(truncate=False)
 
 # Función para procesar las respuestas
 def procesar_respuestas_spark(questions_df, respuestas_df):
     respuestas_procesadas = {}
-
     for pregunta in questions_df.collect():
         id_pregunta = pregunta.idPregunta
         tipo = pregunta.tipo
@@ -116,11 +77,6 @@ def procesar_respuestas_spark(questions_df, respuestas_df):
 # Crear gráficos y mostrar estadísticas
 def crear_graficos_spark(doc, preguntas_df, respuestas_df):
     respuestas_procesadas = procesar_respuestas_spark(preguntas_df, respuestas_df)
-    print(respuestas_procesadas)
-
-    # Mostrar las estadísticas
-    st.header(doc["titulo"])
-    st.write(doc["descripcion"])
 
     for pregunta in doc['questions']:
         st.header(pregunta['texto'])
@@ -143,5 +99,61 @@ def crear_graficos_spark(doc, preguntas_df, respuestas_df):
             df = pd.DataFrame(valores, columns=['Valor'])
             st.write(df.describe())
 
-# Crear gráficos para la encuesta
-crear_graficos_spark(data, questions_df, respuestas_df)
+
+def main():
+    st.title("Análisis de Encuestas")
+    
+
+    # Obtener las encuestas desde MongoDB
+    data = collection.find()
+    # Convertir el cursor a una lista de diccionarios
+    data_list = list(data)
+
+    for doc in data_list:
+        st.header(doc["titulo"])
+        
+
+        df = spark.createDataFrame([doc], schema=schema)
+        ###########################################################################################
+        # Analisis de cantidad de Respuestas por Correo Electrónico
+        st.subheader("Cantidad de Respuestas por Correo Electrónico:")
+
+        # Cuenta la cantidad de respuestas únicas por correo
+        respuestas_por_correo = df.groupBy("respuestas.correoEncuestado").agg(countDistinct("respuestas.correoEncuestado").alias("Cantidad"))
+        #print(df.show(truncate=False))
+
+        # Convierte el DataFrame de Spark a un DataFrame de Pandas y lo muestra
+        st.write(respuestas_por_correo.toPandas())
+        ###########################################################################################
+
+        # Analisis de distribución de tipos de pregunta
+        st.subheader("Distribución de Tipos de Pregunta:")
+
+        # Crea un DataFrame con una fila por pregunta
+        df_exploded = df.select(explode("questions").alias("question"))
+
+        # Cuenta la cantidad de preguntas de cada tipo
+        question_types_counts = df_exploded.groupBy("question.tipo").count()
+
+        # Convierte el DataFrame de Spark a un DataFrame de Pandas y lo muestra
+        st.write(question_types_counts.toPandas())
+
+        ###########################################################################################
+
+        # Analisis de cantidad de respuestas por pregunta
+
+        # Crea un DataFrame con una fila por pregunta
+        questions_df = df.select(explode(col("questions")).alias("question")).select("question.*")
+
+        # Crea un DataFrame con una fila por respuesta
+        respuestas_df = df.select(explode(col("respuestas")).alias("respuesta")).select("respuesta.*")
+        respuestas_df = respuestas_df.withColumn("respuesta", explode(col("respuesta"))).select("correoEncuestado", "respuesta.*")
+
+        # Crear gráficos para la encuesta
+        crear_graficos_spark(doc, questions_df, respuestas_df)
+        st.write("-------------------------------------------------------------------")
+
+if __name__ == "__main__":
+    main()
+    time.sleep(10)
+    st.experimental_rerun()

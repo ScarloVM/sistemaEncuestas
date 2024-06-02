@@ -166,6 +166,16 @@ services:
       networks:
         - web
 
+  spark-worker:
+      image: bitnami/spark:latest
+      environment:
+        - SPARK_MODE=worker
+        - SPARK_MASTER_URL=spark://spark:7077
+      networks:
+        - web
+      depends_on:
+        - spark
+
 networks:
   web:
     driver: bridge
