@@ -115,16 +115,6 @@ def main():
 
         df = spark.createDataFrame([doc], schema=schema)
         ###########################################################################################
-        # Analisis de cantidad de Respuestas por Correo Electrónico
-        st.subheader("Cantidad de Respuestas por Correo Electrónico:")
-
-        # Cuenta la cantidad de respuestas únicas por correo
-        respuestas_por_correo = df.groupBy("respuestas.correoEncuestado").agg(countDistinct("respuestas.correoEncuestado").alias("Cantidad"))
-        #print(df.show(truncate=False))
-
-        # Convierte el DataFrame de Spark a un DataFrame de Pandas y lo muestra
-        st.write(respuestas_por_correo.toPandas())
-        ###########################################################################################
 
         # Analisis de distribución de tipos de pregunta
         st.subheader("Distribución de Tipos de Pregunta:")

@@ -18,3 +18,202 @@
 2024-06-01 18:59:38.607+0000 INFO  ======== Neo4j 5.20.0 ========
 2024-06-01 19:00:38.301+0000 INFO  Neo4j Server shutdown initiated by request
 2024-06-01 19:00:38.315+0000 INFO  Stopped.
+2024-06-02 17:43:45.075+0000 INFO  Logging config in use: File '/var/lib/neo4j/conf/user-logs.xml'
+2024-06-02 17:43:45.193+0000 INFO  Starting...
+2024-06-02 17:43:48.783+0000 INFO  This instance is ServerId{9af85dee} (9af85dee-79f8-4ca1-817f-a21fb2afc99c)
+2024-06-02 17:43:53.910+0000 INFO  ======== Neo4j 5.20.0 ========
+2024-06-02 17:44:35.847+0000 ERROR Failed to start Neo4j on 0.0.0.0:7474.
+java.lang.RuntimeException: Error starting Neo4j database server at /data/databases
+	at org.neo4j.graphdb.facade.DatabaseManagementServiceFactory.startDatabaseServer(DatabaseManagementServiceFactory.java:278) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.graphdb.facade.DatabaseManagementServiceFactory.build(DatabaseManagementServiceFactory.java:213) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.server.CommunityBootstrapper.createNeo(CommunityBootstrapper.java:38) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.server.NeoBootstrapper.start(NeoBootstrapper.java:184) [neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.server.NeoBootstrapper.start(NeoBootstrapper.java:99) [neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.server.CommunityEntryPoint.main(CommunityEntryPoint.java:30) [neo4j-5.20.0.jar:5.20.0]
+Caused by: org.neo4j.kernel.lifecycle.LifecycleException: Component 'org.neo4j.dbms.database.DefaultSystemGraphInitializer@5934ca1e' was successfully initialized, but failed to start. Please see the attached cause exception "Transaction logs are missing and recovery is not possible.".
+	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.start(LifeSupport.java:364) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.start(LifeSupport.java:91) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.graphdb.facade.DatabaseManagementServiceFactory.startDatabaseServer(DatabaseManagementServiceFactory.java:269) ~[neo4j-5.20.0.jar:5.20.0]
+	... 5 more
+Caused by: org.neo4j.graphdb.DatabaseShutdownException: This database is shutdown.
+	at org.neo4j.kernel.availability.DatabaseAvailabilityGuard.assertDatabaseAvailable(DatabaseAvailabilityGuard.java:154) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseFacade.beginKernelTransaction(GraphDatabaseFacade.java:148) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseFacade.beginTransactionInternal(GraphDatabaseFacade.java:117) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseFacade.beginTransaction(GraphDatabaseFacade.java:89) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseTransactions.beginTransaction(GraphDatabaseTransactions.java:113) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseTransactions.beginTransaction(GraphDatabaseTransactions.java:107) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseTransactions.beginTransaction(GraphDatabaseTransactions.java:102) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseTransactions.beginTx(GraphDatabaseTransactions.java:93) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.SystemGraphComponents.initializeSystemGraph(SystemGraphComponents.java:83) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.DefaultSystemGraphInitializer.initializeSystemGraph(DefaultSystemGraphInitializer.java:38) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.SystemGraphInitializer.start(SystemGraphInitializer.java:27) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.start(LifeSupport.java:347) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.start(LifeSupport.java:91) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.graphdb.facade.DatabaseManagementServiceFactory.startDatabaseServer(DatabaseManagementServiceFactory.java:269) ~[neo4j-5.20.0.jar:5.20.0]
+	... 5 more
+Caused by: org.neo4j.kernel.lifecycle.LifecycleException: Component 'org.neo4j.kernel.recovery.Recovery$MissingTransactionLogsCheck@749f61a3' failed to initialize. Please see the attached cause exception "Transaction logs are missing and recovery is not possible.".
+	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.init(LifeSupport.java:334) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.init(LifeSupport.java:56) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.start(LifeSupport.java:85) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.recovery.Recovery.performRecovery(Recovery.java:739) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.recovery.Recovery.performRecovery(Recovery.java:445) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.database.Database.specificStart(Database.java:425) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.database.AbstractDatabase.start(AbstractDatabase.java:160) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.DatabaseLifecycles.startDatabase(DatabaseLifecycles.java:123) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.DatabaseLifecycles$SystemDatabaseStarter.start(DatabaseLifecycles.java:146) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.start(LifeSupport.java:347) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.start(LifeSupport.java:91) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.graphdb.facade.DatabaseManagementServiceFactory.startDatabaseServer(DatabaseManagementServiceFactory.java:269) ~[neo4j-5.20.0.jar:5.20.0]
+	... 5 more
+Caused by: java.lang.RuntimeException: Transaction logs are missing and recovery is not possible.
+	at org.neo4j.kernel.recovery.Recovery$MissingTransactionLogsCheck.checkForMissingLogFiles(Recovery.java:1003) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.recovery.Recovery$MissingTransactionLogsCheck.init(Recovery.java:989) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.init(LifeSupport.java:317) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.init(LifeSupport.java:56) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.start(LifeSupport.java:85) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.recovery.Recovery.performRecovery(Recovery.java:739) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.recovery.Recovery.performRecovery(Recovery.java:445) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.database.Database.specificStart(Database.java:425) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.database.AbstractDatabase.start(AbstractDatabase.java:160) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.DatabaseLifecycles.startDatabase(DatabaseLifecycles.java:123) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.DatabaseLifecycles$SystemDatabaseStarter.start(DatabaseLifecycles.java:146) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.start(LifeSupport.java:347) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.start(LifeSupport.java:91) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.graphdb.facade.DatabaseManagementServiceFactory.startDatabaseServer(DatabaseManagementServiceFactory.java:269) ~[neo4j-5.20.0.jar:5.20.0]
+	... 5 more
+2024-06-02 17:44:35.875+0000 INFO  Neo4j Server shutdown initiated by request
+2024-06-02 17:44:35.883+0000 INFO  Stopped.
+2024-06-02 17:44:54.952+0000 INFO  Logging config in use: File '/var/lib/neo4j/conf/user-logs.xml'
+2024-06-02 17:44:54.970+0000 INFO  Starting...
+2024-06-02 17:44:56.208+0000 INFO  This instance is ServerId{9af85dee} (9af85dee-79f8-4ca1-817f-a21fb2afc99c)
+2024-06-02 17:44:57.270+0000 INFO  ======== Neo4j 5.20.0 ========
+2024-06-02 17:45:35.455+0000 ERROR Failed to start Neo4j on 0.0.0.0:7474.
+java.lang.RuntimeException: Error starting Neo4j database server at /data/databases
+	at org.neo4j.graphdb.facade.DatabaseManagementServiceFactory.startDatabaseServer(DatabaseManagementServiceFactory.java:278) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.graphdb.facade.DatabaseManagementServiceFactory.build(DatabaseManagementServiceFactory.java:213) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.server.CommunityBootstrapper.createNeo(CommunityBootstrapper.java:38) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.server.NeoBootstrapper.start(NeoBootstrapper.java:184) [neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.server.NeoBootstrapper.start(NeoBootstrapper.java:99) [neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.server.CommunityEntryPoint.main(CommunityEntryPoint.java:30) [neo4j-5.20.0.jar:5.20.0]
+Caused by: org.neo4j.kernel.lifecycle.LifecycleException: Component 'org.neo4j.dbms.database.DefaultSystemGraphInitializer@5934ca1e' was successfully initialized, but failed to start. Please see the attached cause exception "Transaction logs are missing and recovery is not possible.".
+	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.start(LifeSupport.java:364) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.start(LifeSupport.java:91) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.graphdb.facade.DatabaseManagementServiceFactory.startDatabaseServer(DatabaseManagementServiceFactory.java:269) ~[neo4j-5.20.0.jar:5.20.0]
+	... 5 more
+Caused by: org.neo4j.graphdb.DatabaseShutdownException: This database is shutdown.
+	at org.neo4j.kernel.availability.DatabaseAvailabilityGuard.assertDatabaseAvailable(DatabaseAvailabilityGuard.java:154) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseFacade.beginKernelTransaction(GraphDatabaseFacade.java:148) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseFacade.beginTransactionInternal(GraphDatabaseFacade.java:117) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseFacade.beginTransaction(GraphDatabaseFacade.java:89) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseTransactions.beginTransaction(GraphDatabaseTransactions.java:113) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseTransactions.beginTransaction(GraphDatabaseTransactions.java:107) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseTransactions.beginTransaction(GraphDatabaseTransactions.java:102) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseTransactions.beginTx(GraphDatabaseTransactions.java:93) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.SystemGraphComponents.initializeSystemGraph(SystemGraphComponents.java:83) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.DefaultSystemGraphInitializer.initializeSystemGraph(DefaultSystemGraphInitializer.java:38) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.SystemGraphInitializer.start(SystemGraphInitializer.java:27) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.start(LifeSupport.java:347) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.start(LifeSupport.java:91) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.graphdb.facade.DatabaseManagementServiceFactory.startDatabaseServer(DatabaseManagementServiceFactory.java:269) ~[neo4j-5.20.0.jar:5.20.0]
+	... 5 more
+Caused by: org.neo4j.kernel.lifecycle.LifecycleException: Component 'org.neo4j.kernel.recovery.Recovery$MissingTransactionLogsCheck@2838eb' failed to initialize. Please see the attached cause exception "Transaction logs are missing and recovery is not possible.".
+	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.init(LifeSupport.java:334) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.init(LifeSupport.java:56) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.start(LifeSupport.java:85) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.recovery.Recovery.performRecovery(Recovery.java:739) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.recovery.Recovery.performRecovery(Recovery.java:445) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.database.Database.specificStart(Database.java:425) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.database.AbstractDatabase.start(AbstractDatabase.java:160) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.DatabaseLifecycles.startDatabase(DatabaseLifecycles.java:123) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.DatabaseLifecycles$SystemDatabaseStarter.start(DatabaseLifecycles.java:146) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.start(LifeSupport.java:347) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.start(LifeSupport.java:91) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.graphdb.facade.DatabaseManagementServiceFactory.startDatabaseServer(DatabaseManagementServiceFactory.java:269) ~[neo4j-5.20.0.jar:5.20.0]
+	... 5 more
+Caused by: java.lang.RuntimeException: Transaction logs are missing and recovery is not possible.
+	at org.neo4j.kernel.recovery.Recovery$MissingTransactionLogsCheck.checkForMissingLogFiles(Recovery.java:1003) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.recovery.Recovery$MissingTransactionLogsCheck.init(Recovery.java:989) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.init(LifeSupport.java:317) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.init(LifeSupport.java:56) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.start(LifeSupport.java:85) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.recovery.Recovery.performRecovery(Recovery.java:739) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.recovery.Recovery.performRecovery(Recovery.java:445) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.database.Database.specificStart(Database.java:425) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.database.AbstractDatabase.start(AbstractDatabase.java:160) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.DatabaseLifecycles.startDatabase(DatabaseLifecycles.java:123) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.DatabaseLifecycles$SystemDatabaseStarter.start(DatabaseLifecycles.java:146) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.start(LifeSupport.java:347) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.start(LifeSupport.java:91) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.graphdb.facade.DatabaseManagementServiceFactory.startDatabaseServer(DatabaseManagementServiceFactory.java:269) ~[neo4j-5.20.0.jar:5.20.0]
+	... 5 more
+2024-06-02 17:45:35.501+0000 INFO  Neo4j Server shutdown initiated by request
+2024-06-02 17:45:35.508+0000 INFO  Stopped.
+2024-06-02 17:45:48.078+0000 INFO  Logging config in use: File '/var/lib/neo4j/conf/user-logs.xml'
+2024-06-02 17:45:48.097+0000 INFO  Starting...
+2024-06-02 17:45:49.014+0000 INFO  This instance is ServerId{9af85dee} (9af85dee-79f8-4ca1-817f-a21fb2afc99c)
+2024-06-02 17:45:49.820+0000 INFO  ======== Neo4j 5.20.0 ========
+2024-06-02 17:46:28.127+0000 ERROR Failed to start Neo4j on 0.0.0.0:7474.
+java.lang.RuntimeException: Error starting Neo4j database server at /data/databases
+	at org.neo4j.graphdb.facade.DatabaseManagementServiceFactory.startDatabaseServer(DatabaseManagementServiceFactory.java:278) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.graphdb.facade.DatabaseManagementServiceFactory.build(DatabaseManagementServiceFactory.java:213) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.server.CommunityBootstrapper.createNeo(CommunityBootstrapper.java:38) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.server.NeoBootstrapper.start(NeoBootstrapper.java:184) [neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.server.NeoBootstrapper.start(NeoBootstrapper.java:99) [neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.server.CommunityEntryPoint.main(CommunityEntryPoint.java:30) [neo4j-5.20.0.jar:5.20.0]
+Caused by: org.neo4j.kernel.lifecycle.LifecycleException: Component 'org.neo4j.dbms.database.DefaultSystemGraphInitializer@477021ee' was successfully initialized, but failed to start. Please see the attached cause exception "Transaction logs are missing and recovery is not possible.".
+	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.start(LifeSupport.java:364) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.start(LifeSupport.java:91) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.graphdb.facade.DatabaseManagementServiceFactory.startDatabaseServer(DatabaseManagementServiceFactory.java:269) ~[neo4j-5.20.0.jar:5.20.0]
+	... 5 more
+Caused by: org.neo4j.graphdb.DatabaseShutdownException: This database is shutdown.
+	at org.neo4j.kernel.availability.DatabaseAvailabilityGuard.assertDatabaseAvailable(DatabaseAvailabilityGuard.java:154) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseFacade.beginKernelTransaction(GraphDatabaseFacade.java:148) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseFacade.beginTransactionInternal(GraphDatabaseFacade.java:117) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseFacade.beginTransaction(GraphDatabaseFacade.java:89) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseTransactions.beginTransaction(GraphDatabaseTransactions.java:113) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseTransactions.beginTransaction(GraphDatabaseTransactions.java:107) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseTransactions.beginTransaction(GraphDatabaseTransactions.java:102) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.impl.factory.GraphDatabaseTransactions.beginTx(GraphDatabaseTransactions.java:93) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.SystemGraphComponents.initializeSystemGraph(SystemGraphComponents.java:83) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.DefaultSystemGraphInitializer.initializeSystemGraph(DefaultSystemGraphInitializer.java:38) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.SystemGraphInitializer.start(SystemGraphInitializer.java:27) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.start(LifeSupport.java:347) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.start(LifeSupport.java:91) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.graphdb.facade.DatabaseManagementServiceFactory.startDatabaseServer(DatabaseManagementServiceFactory.java:269) ~[neo4j-5.20.0.jar:5.20.0]
+	... 5 more
+Caused by: org.neo4j.kernel.lifecycle.LifecycleException: Component 'org.neo4j.kernel.recovery.Recovery$MissingTransactionLogsCheck@45dc7be' failed to initialize. Please see the attached cause exception "Transaction logs are missing and recovery is not possible.".
+	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.init(LifeSupport.java:334) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.init(LifeSupport.java:56) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.start(LifeSupport.java:85) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.recovery.Recovery.performRecovery(Recovery.java:739) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.recovery.Recovery.performRecovery(Recovery.java:445) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.database.Database.specificStart(Database.java:425) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.database.AbstractDatabase.start(AbstractDatabase.java:160) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.DatabaseLifecycles.startDatabase(DatabaseLifecycles.java:123) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.DatabaseLifecycles$SystemDatabaseStarter.start(DatabaseLifecycles.java:146) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.start(LifeSupport.java:347) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.start(LifeSupport.java:91) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.graphdb.facade.DatabaseManagementServiceFactory.startDatabaseServer(DatabaseManagementServiceFactory.java:269) ~[neo4j-5.20.0.jar:5.20.0]
+	... 5 more
+Caused by: java.lang.RuntimeException: Transaction logs are missing and recovery is not possible.
+	at org.neo4j.kernel.recovery.Recovery$MissingTransactionLogsCheck.checkForMissingLogFiles(Recovery.java:1003) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.recovery.Recovery$MissingTransactionLogsCheck.init(Recovery.java:989) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.init(LifeSupport.java:317) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.init(LifeSupport.java:56) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.start(LifeSupport.java:85) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.recovery.Recovery.performRecovery(Recovery.java:739) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.recovery.Recovery.performRecovery(Recovery.java:445) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.database.Database.specificStart(Database.java:425) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.database.AbstractDatabase.start(AbstractDatabase.java:160) ~[neo4j-kernel-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.DatabaseLifecycles.startDatabase(DatabaseLifecycles.java:123) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.dbms.database.DatabaseLifecycles$SystemDatabaseStarter.start(DatabaseLifecycles.java:146) ~[neo4j-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport$LifecycleInstance.start(LifeSupport.java:347) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.kernel.lifecycle.LifeSupport.start(LifeSupport.java:91) ~[neo4j-common-5.20.0.jar:5.20.0]
+	at org.neo4j.graphdb.facade.DatabaseManagementServiceFactory.startDatabaseServer(DatabaseManagementServiceFactory.java:269) ~[neo4j-5.20.0.jar:5.20.0]
+	... 5 more
+2024-06-02 17:46:28.135+0000 INFO  Neo4j Server shutdown initiated by request
+2024-06-02 17:46:28.139+0000 INFO  Stopped.
+2024-06-02 17:46:35.261+0000 INFO  Logging config in use: File '/var/lib/neo4j/conf/user-logs.xml'
+2024-06-02 17:46:35.279+0000 INFO  Starting...
+2024-06-02 17:46:36.308+0000 INFO  This instance is ServerId{9af85dee} (9af85dee-79f8-4ca1-817f-a21fb2afc99c)
+2024-06-02 17:46:37.278+0000 INFO  ======== Neo4j 5.20.0 ========
