@@ -19,11 +19,6 @@ RUN apt-get update && apt-get install -y openjdk-17-jre
 
 ENV JAVA_HOME /usr/lib/jvm/java-17-openjdk-amd64
 
-# Copiar el script de inicio al contenedor
-COPY start.sh .
-
-# Dar permisos de ejecución al script de inicio
-RUN chmod +x start.sh
 
 # Copiar el contenido de la aplicación en el contenedor
 COPY . .
