@@ -105,7 +105,7 @@ db.encuestas.insertOne({
             "idPregunta": 3,
             "tipo": "eleccion_multiple",
             "texto": "¿Qué productos te gustaría ver en el futuro?",
-            "option_seleccionada": ["Producto A", "Producto D", "Producto B"]
+            "option_seleccionada": ["Producto A", "Producto D"]
           },
           {
             "idPregunta": 4,
@@ -249,92 +249,7 @@ db.encuestas.insertOne({
             "respuesta": "35"
           }
         ]
-      },
-      {
-        "correoEncuestado": "6",
-        "respuesta": [
-          {
-            "idPregunta": 1,
-            "tipo": "abierta",
-            "texto": "¿Cuál es tu opinión sobre nuestro servicio?",
-            "respuesta": "Regular"
-          },
-          {
-            "idPregunta": 2,
-            "tipo": "eleccion_simple",
-            "texto": "¿Estás satisfecho con el producto?",
-            "option_seleccionada": "Regular"
-          },
-          {
-            "idPregunta": 3,
-            "tipo": "eleccion_multiple",
-            "texto": "¿Qué productos te gustaría ver en el futuro?",
-            "option_seleccionada": ["Producto A"]
-          },
-          {
-            "idPregunta": 4,
-            "tipo": "escala_calificacion",
-            "texto": "¿Qué tan satisfecho estás con nuestro servicio?",
-            "option_seleccionada": "3"
-          },
-          {
-            "idPregunta": 5,
-            "tipo": "Si/No",
-            "texto": "¿Recomendarías nuestro servicio a un amigo?",
-            "option_seleccionada": "No"
-          },
-          {
-            "idPregunta": 6,
-            "tipo": "numerica",
-            "texto": "¿Cuántos años tienes?",
-            "respuesta": "28"
-          }
-        ]
-      },
-      {
-        "correoEncuestado": "7",
-        "respuesta": [
-          {
-            "idPregunta": 1,
-            "tipo": "abierta",
-            "texto": "¿Cuál es tu opinión sobre nuestro servicio?",
-            "respuesta": "Bueno"
-          },
-          {
-            "idPregunta": 2,
-            "tipo": "eleccion_simple",
-            "texto": "¿Estás satisfecho con el producto?",
-            "option_seleccionada": "Excelente"
-          },
-          {
-            "idPregunta": 3,
-            "tipo": "eleccion_multiple",
-            "texto": "¿Qué productos te gustaría ver en el futuro?",
-            "option_seleccionada": ["Producto A", "Producto C"]
-          },
-          {
-            "idPregunta": 4,
-            "tipo": "escala_calificacion",
-            "texto": "¿Qué tan satisfecho estás con nuestro servicio?",
-            "option_seleccionada": "4"
-          },
-          {
-            "idPregunta": 5,
-            "tipo": "Si/No",
-            "texto": "¿Recomendarías nuestro servicio a un amigo?",
-            "option_seleccionada": "Si"
-          },
-          {
-            "idPregunta": 6,
-            "tipo": "numerica",
-            "texto": "¿Cuántos años tienes?",
-            "respuesta": "42"
-          }
-        ]
       }
-      
     ]
   }
 );
-
-

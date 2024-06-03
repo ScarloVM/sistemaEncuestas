@@ -20,7 +20,7 @@ services:
     depends_on:
       - db
       - cache
-       - neo4j
+      # - neo4j
       - kafka1
     volumes:
       - .:/usr/src/app
@@ -142,7 +142,7 @@ services:
     depends_on:
       - kafka1
 
-      
+
   neo4j:
     image: neo4j:latest
     restart: always
@@ -178,7 +178,17 @@ services:
         - web
       depends_on:
         - spark
-
+  
+  kafkaweb:
+    build:
+      context: ./wsKafka
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./kafka:/app
+    networks:
+      - web
+    
 networks:
   web:
     driver: bridge
