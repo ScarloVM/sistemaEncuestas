@@ -1,4 +1,4 @@
-import {KafkaConfig} from './KafkaConfig.js';
+const {KafkaConfig} = require('./KafkaConfig.js');
 
 const sendMessageToKafka = async (req, res) => {
     try {
