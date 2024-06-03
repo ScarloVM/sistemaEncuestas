@@ -15,7 +15,7 @@ RUN pip install pyspark
 
 # Instalar Java 17
 
-#RUN apt-get update && apt-get install -y openjdk-17-jre
+RUN apt-get update && apt-get install -y openjdk-17-jre
 
 ENV JAVA_HOME /usr/lib/jvm/java-17-openjdk-amd64
 

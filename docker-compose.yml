@@ -20,7 +20,7 @@ services:
     depends_on:
       - db
       - cache
-      # - neo4j
+      - neo4j
       - kafka1
     volumes:
       - .:/usr/src/app

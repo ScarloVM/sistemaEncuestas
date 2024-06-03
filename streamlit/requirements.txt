@@ -2,3 +2,6 @@ streamlit
 pymongo
 pandas
 pyspark
+neo4j 
+py2neo 
+pyvis

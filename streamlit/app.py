@@ -3,15 +3,18 @@ import streamlit as st
 import pandas as pd
 from pymongo import MongoClient
 from pyspark.sql.types import StructType, StructField, StringType, ArrayType, IntegerType
-from pyspark.sql.functions import explode, col, countDistinct
+from pyspark.sql.functions import explode, col
+from py2neo import Graph
+from pyvis.network import Network
+import streamlit.components.v1 as components
 
-# Conexion a MongoDB
+# Conexión a MongoDB
 mongo_uri = "mongodb://root:example@mongo/admin"
 client = MongoClient(mongo_uri)
 db = client['sistemaEncuestas']
 collection = db['encuestas']
 
-# Crear sesion de Spark que se conecta al contenedor de Spark
+# Crear sesión de Spark que se conecta al contenedor de Spark
 from pyspark.sql import SparkSession
 spark = SparkSession.builder \
     .appName("Streamlit_Analysis") \
@@ -27,7 +30,7 @@ schema = StructType([
     StructField("estado", StringType(), True),
     StructField("questions", ArrayType(StructType([
         StructField("idPregunta", IntegerType(), True),
-        StructField("tipo", StringType(), True),  
+        StructField("tipo", StringType(), True),
         StructField("texto", StringType(), True),
         StructField("options", ArrayType(StringType()), True)
     ])), True),
@@ -43,8 +46,10 @@ schema = StructType([
     ])), True)
 ])
 
+# Conexión a Neo4j
+neo4j_uri = "bolt://neo4j:7687"
+graph = Graph(neo4j_uri, auth=("neo4j", "strongpassword123"))
 
-# Función para procesar las respuestas
 def procesar_respuestas_spark(questions_df, respuestas_df):
     respuestas_procesadas = {}
     for pregunta in questions_df.collect():
@@ -74,7 +79,6 @@ def procesar_respuestas_spark(questions_df, respuestas_df):
 
     return respuestas_procesadas
 
-# Crear gráficos y mostrar estadísticas
 def crear_graficos_spark(doc, preguntas_df, respuestas_df):
     respuestas_procesadas = procesar_respuestas_spark(preguntas_df, respuestas_df)
 
@@ -99,51 +103,119 @@ def crear_graficos_spark(doc, preguntas_df, respuestas_df):
             df = pd.DataFrame(valores, columns=['Valor'])
             st.write(df.describe())
 
+def cargar_datos_neo4j(doc):
+    graph = Graph("bolt://neo4j:7687", auth=("neo4j", "strongpassword123"))
+    idEncuesta = doc["idEncuesta"]
+
+    # Crear nodos de encuestados si no existen
+    for respuesta in doc['respuestas']:
+        correo_encuestado = respuesta['correoEncuestado']
+        graph.run(
+            """
+            MERGE (e:Encuestado {correo: $correo, idEncuesta: $idEncuesta})
+            """,
+            correo=correo_encuestado,
+            idEncuesta=idEncuesta
+        )
+    
+    # Crear nodos de respuestas y relaciones RESPONDIO
+    for respuesta in doc['respuestas']:
+        correo_encuestado = respuesta['correoEncuestado']
+        for r in respuesta['respuesta']:
+            respuesta_value = r.get('respuesta') or r.get('option_seleccionada')
+            graph.run(
+                """
+                MATCH (e:Encuestado {correo: $correo, idEncuesta: $idEncuesta})
+                MERGE (res:Respuesta {idPregunta: $idPregunta, tipo: $tipo, texto: $texto, respuesta: $respuesta_value, idEncuesta: $idEncuesta})
+                MERGE (e)-[:RESPONDIO]->(res)
+                """,
+                correo=correo_encuestado,
+                idPregunta=r['idPregunta'],
+                tipo=r['tipo'],
+                texto=r['texto'],
+                respuesta_value=respuesta_value,
+                idEncuesta=idEncuesta
+            )
+
+    # Verificación de la carga de datos
+    encuestados = graph.run("MATCH (e:Encuestado {idEncuesta: $idEncuesta}) RETURN COUNT(e) AS count", idEncuesta=idEncuesta).evaluate()
+    respuestas = graph.run("MATCH (r:Respuesta {idEncuesta: $idEncuesta}) RETURN COUNT(r) AS count", idEncuesta=idEncuesta).evaluate()
+    st.write(f"Encuestados cargados para encuesta {idEncuesta}: {encuestados}, Respuestas cargadas: {respuestas}")
+
+def calcular_similitudes(idEncuesta):
+    graph = Graph("bolt://neo4j:7687", auth=("neo4j", "strongpassword123"))
+
+    graph.run("""
+    MATCH (e1:Encuestado {idEncuesta: $idEncuesta})-[r1:RESPONDIO]->(res:Respuesta {idEncuesta: $idEncuesta})<-[r2:RESPONDIO]-(e2:Encuestado {idEncuesta: $idEncuesta})
+    WHERE e1 <> e2
+    WITH e1, e2, COUNT(res) AS respuestas_comunes
+    WHERE respuestas_comunes > 1
+    MERGE (e1)-[s:SIMILAR_A {respuestas_comunes: respuestas_comunes, idEncuesta: $idEncuesta}]->(e2)
+    """, idEncuesta=idEncuesta)
+
+    # Verificación
+    total_similaridades = graph.evaluate("MATCH ()-[r:SIMILAR_A {idEncuesta: $idEncuesta}]->() RETURN count(r)", idEncuesta=idEncuesta)
+    st.write(f"Total relaciones SIMILAR_A creadas para encuesta {idEncuesta}: {total_similaridades}")
+
+def visualizar_grafo(idEncuesta):
+    net = Network(notebook=True)
+
+    query = """
+    MATCH (e:Encuestado {idEncuesta: $idEncuesta})-[r:SIMILAR_A {idEncuesta: $idEncuesta}]->(e2:Encuestado {idEncuesta: $idEncuesta})
+    RETURN e, r, e2
+    """
+    data = graph.run(query, idEncuesta=idEncuesta).data()
+
+    added_nodes = set()  # Almacenar nodos ya agregados
+
+    for record in data:
+        e = record['e']
+        e2 = record['e2']
+        r = record['r']
+
+        if e.identity not in added_nodes:
+            net.add_node(e.identity, label=e['correo'], title=e['correo'])
+            added_nodes.add(e.identity)
+
+        if e2.identity not in added_nodes:
+            net.add_node(e2.identity, label=e2['correo'], title=e2['correo'])
+            added_nodes.add(e2.identity)
+
+        net.add_edge(e.identity, e2.identity, value=r['respuestas_comunes'])
+
+    net.show(f"grafo_{idEncuesta}.html")
 
 def main():
-    st.title("Análisis de Encuestas")
-    
+    cursor = collection.find()
+    encuestas_procesadas = set()  # Conjunto para almacenar IDs de encuestas procesadas
 
-    # Obtener las encuestas desde MongoDB
-    data = collection.find()
-    # Convertir el cursor a una lista de diccionarios
-    data_list = list(data)
+    for doc in cursor:
+        idEncuesta = doc["idEncuesta"]
 
-    for doc in data_list:
-        st.header(doc["titulo"])
-        
+        if idEncuesta not in encuestas_procesadas:
+            encuestas_procesadas.add(idEncuesta)  # Agregar ID de encuesta al conjunto de encuestas procesadas
 
-        df = spark.createDataFrame([doc], schema=schema)
-        ###########################################################################################
+            st.header(doc["titulo"])
 
-        # Analisis de distribución de tipos de pregunta
-        st.subheader("Distribución de Tipos de Pregunta:")
+            df = spark.createDataFrame([doc], schema=schema)
+            df_exploded = df.select(explode("questions").alias("question"))
+            question_types_counts = df_exploded.groupBy("question.tipo").count()
+            st.write(question_types_counts.toPandas())
 
-        # Crea un DataFrame con una fila por pregunta
-        df_exploded = df.select(explode("questions").alias("question"))
-
-        # Cuenta la cantidad de preguntas de cada tipo
-        question_types_counts = df_exploded.groupBy("question.tipo").count()
-
-        # Convierte el DataFrame de Spark a un DataFrame de Pandas y lo muestra
-        st.write(question_types_counts.toPandas())
-
-        ###########################################################################################
-
-        # Analisis de cantidad de respuestas por pregunta
-
-        # Crea un DataFrame con una fila por pregunta
-        questions_df = df.select(explode(col("questions")).alias("question")).select("question.*")
-
-        # Crea un DataFrame con una fila por respuesta
-        respuestas_df = df.select(explode(col("respuestas")).alias("respuesta")).select("respuesta.*")
-        respuestas_df = respuestas_df.withColumn("respuesta", explode(col("respuesta"))).select("correoEncuestado", "respuesta.*")
-
-        # Crear gráficos para la encuesta
-        crear_graficos_spark(doc, questions_df, respuestas_df)
-        st.write("-------------------------------------------------------------------")
+            questions_df = df.select(explode(col("questions")).alias("question")).select("question.*")
+            respuestas_df = df.select(explode(col("respuestas")).alias("respuesta")).select("respuesta.*")
+            respuestas_df = respuestas_df.withColumn("respuesta", explode(col("respuesta"))).select("correoEncuestado", "respuesta.*")
+            crear_graficos_spark(doc, questions_df, respuestas_df)
+            cargar_datos_neo4j(doc)
+            calcular_similitudes(idEncuesta)
+            st.header("Visualización del Grafo de Similitudes entre Encuestados con Neo4j")
+            st.write(f"A continuación se muestra el grafo de similitudes entre encuestados para la encuesta {idEncuesta}. Los nodos representan encuestados y los bordes representan similitudes significativas en sus respuestas.")
+            visualizar_grafo(idEncuesta)
+            with open(f"grafo_{idEncuesta}.html", "r", encoding="utf-8") as file:
+                graph_html = file.read()
+            components.html(graph_html, height=800)
 
 if __name__ == "__main__":
     main()
-    time.sleep(10)
+    time.sleep(30)
     st.experimental_rerun()
