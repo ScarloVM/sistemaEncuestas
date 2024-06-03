@@ -295,7 +295,7 @@ app.get('/surveys/:id/analysis', authenticateAdminCreator, async (req, res) => {
 
 // Nuevos endpoints
 
-app.post('/surveys/:id/edit/start', authenticateAdminCreator, async (req,res)=>{
+app.post('', authenticateAdminCreator, async (req,res)=>{
     const result = await kafka.createSession(req.params.id);
     res.send(result);
 })

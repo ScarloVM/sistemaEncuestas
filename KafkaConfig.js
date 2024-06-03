@@ -5,7 +5,7 @@ class KafkaConfig {
     constructor() {
         this.kafka = new Kafka({
             clientId: 'my-app',
-            brokers: ['localhost:9092'],
+            brokers: ['localhost:9091'],
         });
         this.producer = this.kafka.producer();
         this.consumer = this.kafka.consumer({ groupId: 'test-group' });

@@ -1,6 +1,7 @@
 import json
 import os
 
+from kafka import Kafka
 from AppService import AppService
 from db import Database
 from flask import Flask, request
@@ -16,6 +17,7 @@ db = Database(database=DB_NAME, host=DB_HOST, user=DB_USER, password=DB_PASSWORD
 
 app = Flask(__name__)
 appService = AppService(db)
+kafka = Kafka("localhost:9092")
 
 
 
@@ -49,6 +51,13 @@ def update_task():
 def delete_task(id):
     return appService.delete_task(str(id))
 
+@app.route("/surveys/<int:id>/edit/start", methods=["POST"])
+def create_topic(id):
+    topic = f"editing-survey_{id}"
+    return kafka.create_topic(topic)
+    
+    
+    
 
 
 
