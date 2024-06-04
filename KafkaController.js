@@ -8,8 +8,10 @@ class KafkaController {
 
     async conectarAEdicion(idEncuesta) {
         try {
-            console.log(idEncuesta)
-            this.kafkaConfig.produce('Edicion-Encuenta-'+idEncuesta, 'Inicio de edicion de encuesta');
+            const message = [
+                { value: 'Conectado a edicion' }
+            ];
+            this.kafkaConfig.produce('Edicion-Encuesta-'+idEncuesta, message);
 
             return "Se ha conectado a la edicion exitosamente";
         }catch(err) {
@@ -19,7 +21,10 @@ class KafkaController {
 
     async enviarCambioEncuesta(idEncuesta, cambio) {
         try {
-            this.kafkaConfig.produce('Edicion-Encuentas-'+idEncuesta, message);
+            const message = [
+                { value: JSON.stringify(cambio) }
+            ];
+            this.kafkaConfig.produce('Edicion-Encuesta-'+idEncuesta, message);
             this.appService.updateSurvey(idEncuesta, cambio);
             return "Se ha enviado el cambio exitosamente";
         }catch(err) {
