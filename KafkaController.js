@@ -34,7 +34,8 @@ class KafkaController {
 
     async consultarEstado(idEncuesta) {
         try {
-            
+            const message = this.kafkaConfig.consume('Edicion-Encuesta-'+idEncuesta);
+            return message;
         }catch(err) {
             console.log(err)
         }

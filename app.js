@@ -308,7 +308,8 @@ app.post('/surveys/:id/edit/submit', authenticateAdminCreator, async (req,res)=>
 })
 
 app.get('/surveys/:id/edit/status',async (req,res)=>{
-    
+    const result = await kafka.consultarEstado(req.params.id);
+    res.status(200).send(result);
 })
 
 
