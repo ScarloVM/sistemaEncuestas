@@ -1,25 +1,39 @@
 const {KafkaConfig} = require('./KafkaConfig.js');
 
-const sendMessageToKafka = async (req, res) => {
-    try {
-        const {message} = req.body;
-        const kafkaConfig = new KafkaConfig();
-        const messages = [
-            { key: 'key1', value: message }
-        ]
-        kafkaConfig.produce('test', messages);
-
-        res.status(200).json({
-            status: 'success',
-            message: 'Message sent to Kafka'
-        });
-    }catch(err) {
-        console.log(err)
+class KafkaController {
+    constructor(AppService) {
+        this.kafkaConfig = new KafkaConfig();
+        this.appService = AppService;
     }
-};
 
-const controllers = {
-    sendMessageToKafka
-};
+    async conectarAEdicion(idEncuesta) {
+        try {
+            console.log(idEncuesta)
+            this.kafkaConfig.produce('Edicion-Encuenta-'+idEncuesta, 'Inicio de edicion de encuesta');
 
-module.exports.controllers = controllers;
+            return "Se ha conectado a la edicion exitosamente";
+        }catch(err) {
+            console.log(err)
+        }
+    }
+
+    async enviarCambioEncuesta(idEncuesta, cambio) {
+        try {
+            this.kafkaConfig.produce('Edicion-Encuentas-'+idEncuesta, message);
+            this.appService.updateSurvey(idEncuesta, cambio);
+            return "Se ha enviado el cambio exitosamente";
+        }catch(err) {
+            console.log(err)
+        }
+    }
+
+    async consultarEstado(idEncuesta) {
+        try {
+            
+        }catch(err) {
+            console.log(err)
+        }
+    }
+}
+
+module.exports.KafkaController = KafkaController;

@@ -6,7 +6,7 @@ const {Database2} = require('./db2.js');
 const {AppService} = require('./AppService.js');
 const {RedisClient} = require('./redis.js');
 const cookieParser = require('cookie-parser');
-const {controllers} = require('./KafkaController.js');
+const {KafkaController} = require('./KafkaController.js');
 
 const app = express();
 
@@ -27,6 +27,8 @@ const db2 = new Database2(MONGO_NAME, MONGO_URL,'root', 'example');
 const db = new Database(DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT);
 
 const appService = new AppService(db, db2, redisClient);
+
+const kafka = new KafkaController(appService);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -295,21 +297,20 @@ app.get('/surveys/:id/analysis', authenticateAdminCreator, async (req, res) => {
 
 // Nuevos endpoints
 
-app.post('', authenticateAdminCreator, async (req,res)=>{
-    const result = await kafka.createSession(req.params.id);
-    res.send(result);
+app.post('/surveys/:id/edit/start', authenticateAdminCreator, async (req,res)=>{
+    const result = await kafka.conectarAEdicion(req.params.id);
+    res.status(200).send(result);
 })
 
-app.post('/surveys/:id/edit/submit',async (req,res)=>{
-
+app.post('/surveys/:id/edit/submit', authenticateAdminCreator, async (req,res)=>{
+    const result = await kafka.enviarCambioEncuesta(req.params.id, req.body);
+    res.status(200).send(result);
 })
 
 app.get('/surveys/:id/edit/status',async (req,res)=>{
     
 })
 
-//Prueba KAFKA
-app.post('/api/send', authenticateAdminCreator, controllers.sendMessageToKafka);
 
 
 // Middleware para verificar el token JWT y autenticar al usuario
