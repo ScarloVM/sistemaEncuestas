@@ -16,7 +16,7 @@ class Kafka:
         return consumer
 
     def create_producer(self):
-        producer = Producer({'bootstrap.servers': 'localhost:9091'})
+        producer = Producer({'bootstrap.servers': 'kafka1:19091,kafka2:19092,kafka3:19093'})
         return producer
     
     def create_topic(self, topic):

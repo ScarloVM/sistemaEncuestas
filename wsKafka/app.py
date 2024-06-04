@@ -53,7 +53,7 @@ def delete_task(id):
 
 @app.route("/surveys/<int:id>/edit/start", methods=["POST"])
 def create_topic(id):
-    topic = f"editing-survey_{id}"
+    topic = 'VamosKennors'#f"editing-survey_{id}"
     return kafka.create_topic(topic)
     
     
