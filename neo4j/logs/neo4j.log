@@ -7018,3 +7018,17 @@ Caused by: java.lang.RuntimeException: Mismatching store id. Store StoreId: Stor
 2024-06-06 01:55:38.111+0000 INFO  Started.
 2024-06-06 02:02:26.666+0000 INFO  Neo4j Server shutdown initiated by request
 2024-06-06 02:02:26.704+0000 INFO  Stopping...
+2024-06-06 02:12:03.886+0000 INFO  Logging config in use: File '/var/lib/neo4j/conf/user-logs.xml'
+2024-06-06 02:12:04.000+0000 INFO  Starting...
+2024-06-06 02:12:07.803+0000 INFO  This instance is ServerId{c369f9f8} (c369f9f8-83fe-41cd-9032-6425dc11dcef)
+2024-06-06 02:12:10.423+0000 INFO  ======== Neo4j 5.20.0 ========
+2024-06-06 02:12:33.071+0000 INFO  Anonymous Usage Data is being sent to Neo4j, see https://neo4j.com/docs/usage_data/
+2024-06-06 02:12:33.126+0000 INFO  Bolt enabled on 0.0.0.0:7687.
+2024-06-06 02:12:33.744+0000 INFO  HTTP enabled on 0.0.0.0:7474.
+2024-06-06 02:12:33.745+0000 INFO  Remote interface available at http://localhost:7474/
+2024-06-06 02:12:33.749+0000 INFO  id: F80E617F6373F1E94AC998FC812A34C00825298B6F577F6555C87C7416F49366
+2024-06-06 02:12:33.750+0000 INFO  name: system
+2024-06-06 02:12:33.751+0000 INFO  creationDate: 2024-06-03T21:59:28.724Z
+2024-06-06 02:12:33.752+0000 INFO  Started.
+2024-06-06 02:13:34.611+0000 INFO  Neo4j Server shutdown initiated by request
+2024-06-06 02:13:34.613+0000 INFO  Stopping...

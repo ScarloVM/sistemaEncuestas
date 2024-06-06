@@ -1,7 +1,0 @@
-node_modules
-.venv
-data
-.data
-neo4j
-streamlit
-database
