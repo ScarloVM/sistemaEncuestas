@@ -315,3 +315,35 @@ Para eliminar a un encuestado se envía la solicitud con el metodo **DELETE** y 
 ### GET /surveys/{id}/analysis
 
 Para generar un análisis de las respuestas de una encuesta se envía la solicitud con el metodo **GET** y el endpoint **/surveys/{id}/analysis**. Donde el id sería el id de la encuesta de la que se quiera obtener el análisis. Esta acción solo puede ser realizada por los administradores y creadores de encuesta.
+
+
+## Nuevos endpoints Kafka
+
+### POST /surveys/:id/edit/start
+
+Para iniciar una sesión de edición de una encuesta, se envía la solicitud con el método **POST** y el endpoint **/surveys/:id/edit/start**, donde el ID sería el ID de la encuesta que se quiere editar. Esta acción solo puede ser realizada por los administradores y creadores de encuesta.
+
+
+### POST /surveys/:id/edit/submit
+
+Para enviar cambios al sistema se envía la solicitud con el metodo **POST** y el endpoint **/surveys/:id/edit/submit**, donde el ID sería el ID de la encuesta que se quiere editar. Esta acción solo puede ser realizada por los administradores y creadores de encuesta.
+
+Se enviara un body como el siguiente:
+
+``` js
+{
+  "titulo": "Encuesta de experiencia de compra",
+  "descripcion": "Esta encuesta tiene como objetivo recopilar información sobre la experiencia de compra",
+  "emailCreador": "admin456",
+  "estado": "active"
+}
+
+```
+
+### GET /surveys/:id/edit/status
+
+Para ver la hora del ultimo cambio realizado, se envía la solicitud con el metodo **GET** y el endpoint **/surveys/:id/edit/status**, donde el ID sería el ID de la encuesta que se quiere obtener. Esta acción solo puede ser realizada por los administradores y creadores de encuesta.
+
+## Uso de Streamlit para análisis de datos con Spark y Neo4j
+
+Para ver el análisis de las encuestas puede ingresar al puerto 8501:8501, aquí podrá ver un análisis detallado de cada encuesta, también podrá ver un grafo con las relaciones entre las respuestas de los usuarios. 
