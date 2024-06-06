@@ -196,6 +196,7 @@ def main():
             encuestas_procesadas.add(idEncuesta)  # Agregar ID de encuesta al conjunto de encuestas procesadas
 
             st.header(doc["titulo"])
+            st.write(doc["descripcion"])
 
             df = spark.createDataFrame([doc], schema=schema)
             df_exploded = df.select(explode("questions").alias("question"))

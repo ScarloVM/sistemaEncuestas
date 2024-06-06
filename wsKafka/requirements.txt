@@ -1,5 +1,0 @@
-flask
-python-dotenv
-poetry
-psycopg2
-confluent_kafka

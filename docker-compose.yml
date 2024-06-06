@@ -85,15 +85,15 @@ services:
     networks:
       - web
 
-  # streamlit_app:
-  #   build:
-  #     context: ./streamlit
-  #   ports:
-  #     - "8501:8501"
-  #   volumes:
-  #     - ./streamlit:/app
-  #   networks:
-  #     - web
+  streamlit_app:
+    build:
+      context: ./streamlit
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./streamlit:/app
+    networks:
+      - web
 
   zookeeper:
     platform: linux/amd64
@@ -184,51 +184,43 @@ services:
     networks:
       - web
 
-  # neo4j:
-  #   image: neo4j:latest
-  #   restart: always
-  #   ports:
-  #     - 7474:7474
-  #     - 7687:7687
-  #   environment:
-  #     NEO4J_AUTH: neo4j/strongpassword123
-  #   volumes:
-  #     - ./neo4j/data:/data
-  #     - ./neo4j/logs:/logs
-  #     - ./neo4j/import:/var/lib/neo4j/import
-  #     - ./neo4j/plugins:/plugins
-  #   networks:
-  #     - web
-
-  # spark:
-  #     image: bitnami/spark:latest
-  #     environment:
-  #       - SPARK_MODE=master
-  #     ports:
-  #       - "7077:7077"
-  #       - "8080:8080"
-  #     networks:
-  #       - web
-
-  # spark-worker:
-  #     image: bitnami/spark:latest
-  #     environment:
-  #       - SPARK_MODE=worker
-  #       - SPARK_MASTER_URL=spark://spark:7077
-  #     networks:
-  #       - web
-  #     depends_on:
-  #       - spark
-  
-  kafkaweb:
-    build:
-      context: ./wsKafka
+  neo4j:
+    image: neo4j:latest
+    restart: always
     ports:
-      - "5000:5000"
+      - 7474:7474
+      - 7687:7687
+    environment:
+      NEO4J_AUTH: neo4j/strongpassword123
     volumes:
-      - ./kafka:/app
+      - ./neo4j/data:/data
+      - ./neo4j/logs:/logs
+      - ./neo4j/import:/var/lib/neo4j/import
+      - ./neo4j/plugins:/plugins
     networks:
       - web
+
+  spark:
+      image: bitnami/spark:latest
+      environment:
+        - SPARK_MODE=master
+      ports:
+        - "7077:7077"
+        - "8080:8080"
+      networks:
+        - web
+
+  spark-worker:
+      image: bitnami/spark:latest
+      environment:
+        - SPARK_MODE=worker
+        - SPARK_MASTER_URL=spark://spark:7077
+      networks:
+        - web
+      depends_on:
+        - spark
+  
+
     
 networks:
   web:
